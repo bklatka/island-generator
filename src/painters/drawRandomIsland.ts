@@ -8,14 +8,15 @@ import { getRandomFromArray } from "../utils/getRandomFromArray";
 import { isEqual } from "lodash-es";
 
 
-const ISLAND_LENGTH = 20;
+const ISLAND_LENGTH = 10;
 
 const CENTER_TILES = ['center1', 'center2', 'center3', 'center4']
 
 
 interface DrawnParts {
     tile: IslandTiles;
-    coord: Coordinates
+    coord: Coordinates;
+    start?: boolean;
 }
 
 export function drawRandomIsland(ctx: CanvasRenderingContext2D) {
@@ -25,7 +26,7 @@ export function drawRandomIsland(ctx: CanvasRenderingContext2D) {
     const tileOptions = Object.keys(TileMap).filter(tile => !CENTER_TILES.includes(tile)) as IslandTiles[];
     const startTile = tileOptions[getRandomInRange(0, tileOptions.length)];
 
-    drawnParts.push({ tile: startTile, coord: startPosition });
+    drawnParts.push({ tile: startTile, coord: startPosition, start: true, });
 
 
     for (let i = 0; i < ISLAND_LENGTH; i++) {
@@ -42,6 +43,11 @@ export function drawRandomIsland(ctx: CanvasRenderingContext2D) {
         const possibleTiles: IslandTiles[] = Object.entries(PLACEMENT_RULES)
             .filter(([tileName]) => !CENTER_TILES.includes(tileName))
             .filter(([tileName, directions]) => directions.includes(reversedDirection))
+            .filter(([tileName]) => {
+                const previousSandDirections = SAND_DIRECTIONS[previousTile.tile];
+                const currentSandDirections = SAND_DIRECTIONS[tileName as IslandTiles];
+                return currentSandDirections.some(direction => previousSandDirections.includes(direction))
+            })
             .map(([tileName]) => tileName) as IslandTiles[];
         const selectedTile = getRandomFromArray<IslandTiles>(possibleTiles);
 
@@ -118,6 +124,43 @@ const PLACEMENT_RULES: Record<IslandTiles, Directions[]> = {
     innerBottomRight: ['bottom', 'right'],
     innerBottomLeft: ['bottom', 'left'],
 }
+
+const SAND_DIRECTIONS: Record<IslandTiles, Directions[]> = {
+    bottom1: ['bottom'],
+    bottom2: ['bottom'],
+    top1: ['top'],
+    top2: ['top'],
+    left1: ['left'],
+    left2: ['left'],
+    right1: ['right'],
+    right2: ['right'],
+    center1: [],
+    center2: [],
+    center3: [],
+    center4: [],
+    topRight: ['top', 'right'],
+    topLeft: ['top', 'left'],
+    bottomRight: ['bottom', 'right'],
+    bottomLeft: ['bottom', 'left'],
+    innerBottomLeft: ['bottom', 'left'],
+    innerTopRight: ['top', 'right'],
+    innerBottomRight: ['bottom', 'right'],
+    innerTopLeft: ['top', 'left'],
+}
+
+// const FAMILIES: Record<IslandTiles, Record<Directions, IslandTiles[]>> = {
+//     bottom1: {
+//         left: ['bottom1', 'bottom2', "bottomLeft", "innerBottomRight"],
+//         right:['bottom1', 'bottom2', "bottomRight", "innerBottomLeft"],
+//     },
+//     bottom2: {
+//         left: ['bottom1', 'bottom2', "bottomLeft", "innerBottomRight"],
+//         right:['bottom1', 'bottom2', "bottomRight", "innerBottomLeft"],
+//     },
+//     left1: {
+//         top: ['left1', 'left2', 'topLeft']
+//     }
+// }
 
 function calculateNewPlaceToDraw(drawnElements: DrawnParts[], previousElement: DrawnParts): [Coordinates, Directions]|[null, null] {
     const optionsToGo: Directions[] = [...PLACEMENT_RULES[previousElement.tile]];
