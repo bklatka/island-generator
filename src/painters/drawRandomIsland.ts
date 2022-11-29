@@ -6,6 +6,7 @@ import { IslandTiles } from "../types/IslandTiles";
 import { Directions } from "../types/Directions";
 import { getRandomFromArray } from "../utils/getRandomFromArray";
 import { isEqual } from "lodash-es";
+import { drawCircle } from "./drawCircle";
 
 
 const ISLAND_LENGTH = 10;
@@ -51,11 +52,19 @@ export function drawRandomIsland(ctx: CanvasRenderingContext2D) {
             .map(([tileName]) => tileName) as IslandTiles[];
         const selectedTile = getRandomFromArray<IslandTiles>(possibleTiles);
 
+        const newPart = { tile: selectedTile, coord: newCord };
+
 
         console.log(`going ${directionToGo} with ${selectedTile} from ${previousTile.coord.x}:${previousTile.coord.y} for ${newCord.x}:${newCord.y}`)
 
-        drawnParts.push({ tile: selectedTile, coord: newCord });
+        drawnParts.push(newPart);
     }
+
+    const restWay = findWayHome(drawnParts);
+
+    restWay.forEach((element, idx) => {
+        setTimeout(() => drawCircle(ctx, element.coord), 300 * idx);
+    })
 
 
     drawnParts.forEach(({ tile, coord }) => {
@@ -64,13 +73,13 @@ export function drawRandomIsland(ctx: CanvasRenderingContext2D) {
 
 }
 
-
+const START_PADDING = 2;
 function getRandomStartPosition(): Coordinates {
     const { x, y } = GAME_RESOLUTION;
 
     return {
-        x: getRandomInRange(0, x),
-        y: getRandomInRange(0, y),
+        x: getRandomInRange(START_PADDING, x - START_PADDING),
+        y: getRandomInRange(START_PADDING, y - START_PADDING),
     }
 }
 
@@ -126,41 +135,27 @@ const PLACEMENT_RULES: Record<IslandTiles, Directions[]> = {
 }
 
 const SAND_DIRECTIONS: Record<IslandTiles, Directions[]> = {
-    bottom1: ['bottom'],
-    bottom2: ['bottom'],
-    top1: ['top'],
-    top2: ['top'],
-    left1: ['left'],
-    left2: ['left'],
-    right1: ['right'],
-    right2: ['right'],
+    bottom1: ['top'],
+    bottom2: ['top'],
+    top1: ['bottom'],
+    top2: ['bottom'],
+    left1: ['right'],
+    left2: ['right'],
+    right1: ['left'],
+    right2: ['left'],
     center1: [],
     center2: [],
     center3: [],
     center4: [],
-    topRight: ['top', 'right'],
-    topLeft: ['top', 'left'],
-    bottomRight: ['bottom', 'right'],
-    bottomLeft: ['bottom', 'left'],
-    innerBottomLeft: ['bottom', 'left'],
-    innerTopRight: ['top', 'right'],
-    innerBottomRight: ['bottom', 'right'],
-    innerTopLeft: ['top', 'left'],
+    topRight: ['left', 'bottom'],
+    topLeft: ['bottom', 'right'],
+    bottomRight: ['top', 'left'],
+    bottomLeft: ['top', 'right'],
+    innerBottomLeft: ['top', 'right'],
+    innerTopRight: ['left', 'bottom'],
+    innerBottomRight: ['top', 'left'],
+    innerTopLeft: ['bottom', 'right'],
 }
-
-// const FAMILIES: Record<IslandTiles, Record<Directions, IslandTiles[]>> = {
-//     bottom1: {
-//         left: ['bottom1', 'bottom2', "bottomLeft", "innerBottomRight"],
-//         right:['bottom1', 'bottom2', "bottomRight", "innerBottomLeft"],
-//     },
-//     bottom2: {
-//         left: ['bottom1', 'bottom2', "bottomLeft", "innerBottomRight"],
-//         right:['bottom1', 'bottom2', "bottomRight", "innerBottomLeft"],
-//     },
-//     left1: {
-//         top: ['left1', 'left2', 'topLeft']
-//     }
-// }
 
 function calculateNewPlaceToDraw(drawnElements: DrawnParts[], previousElement: DrawnParts): [Coordinates, Directions]|[null, null] {
     const optionsToGo: Directions[] = [...PLACEMENT_RULES[previousElement.tile]];
@@ -178,6 +173,42 @@ function calculateNewPlaceToDraw(drawnElements: DrawnParts[], previousElement: D
 
     console.warn('Cannot draw')
     return [null, null];
+}
 
+function findWayHome(drawElements: DrawnParts[]): DrawnParts[] {
+    const finalPoint = drawElements[drawElements.length - 1].coord;
+    const startPoint = drawElements[0].coord;
+
+
+    // assess what movement is possible by 1
+    const possiblePoints = [
+        { x: finalPoint.x, y: finalPoint.y - 1 },
+         { x: finalPoint.x, y: finalPoint.y + 1 },
+         { x: finalPoint.x - 1, y: finalPoint.y },
+        { x: finalPoint.x + 1, y: finalPoint.y },
+    ].filter(coords => !drawElements.some(el => isEqual(el.coord, coords)));
+
+    if (!possiblePoints.length) {
+        return drawElements;
+    }
+
+    // choose the one that is moving me towards start
+    const results = possiblePoints.map(coord => Math.floor(Math.sqrt(Math.pow(startPoint.x - coord.x, 2) + Math.pow(startPoint.y - coord.y, 2))))
+    const closestPoint = Math.min(...results);
+
+
+    if (drawElements.length > 100) {
+        console.warn('overflow')
+        return drawElements;
+    }
+    const bestPoint = possiblePoints[results.indexOf(closestPoint)];
+
+    if (closestPoint === 1) {
+        return [...drawElements, { tile: 'center1', coord: bestPoint }];
+    }
+
+    console.log(`Best point[${closestPoint}] `, bestPoint, `Goal`, startPoint);
+    // repeat
+    return findWayHome([...drawElements, { tile: 'center1', coord: bestPoint }])
 
 }
