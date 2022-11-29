@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import './App.css';
-import { drawBackground } from "./drawers/drawBackground";
-import { drawGameGrid } from "./drawers/drawGameGrid";
+import { drawBackground } from "./painters/drawBackground";
+import { drawGameGrid } from "./painters/drawGameGrid";
+import { drawCircle } from "./painters/drawCircle";
 
 
 
@@ -23,6 +24,8 @@ function App() {
 
         drawBackground(ctx);
         drawGameGrid(ctx);
+        drawCircle(ctx, { x: 5, y: 1 })
+
 
     }, [hasLoaded])
 

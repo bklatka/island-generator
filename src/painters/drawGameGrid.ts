@@ -1,4 +1,5 @@
 import { times } from 'lodash-es'
+import { Coordinates } from "../types/Coordinates";
 // recommended resolutions
 // 48,
 
@@ -6,6 +7,13 @@ const RATIO = [4, 3];
 const X_RESOLUTION = 24;
 const Y_RESOLUTION = X_RESOLUTION/RATIO[0] * RATIO[1];
 
+
+export const GAME_RESOLUTION = {
+    x: X_RESOLUTION,
+    y: Y_RESOLUTION,
+    getGridWidth: getXStep,
+    getGridHeight: getYStep,
+}
 
 const GRID_COLOR = '#76c4ff'
 
@@ -52,4 +60,11 @@ function getXStep(ctx: CanvasRenderingContext2D): number {
 function getYStep(ctx: CanvasRenderingContext2D): number {
     const { height } = ctx.canvas;
     return height/Y_RESOLUTION;
+}
+
+export function getGridPosition(ctx: CanvasRenderingContext2D, coord: Coordinates): [number, number] {
+    const xPos = getXStep(ctx) * coord.x;
+    const yPos = getYStep(ctx) * coord.y;
+
+    return [xPos, yPos];
 }
