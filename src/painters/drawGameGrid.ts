@@ -15,7 +15,7 @@ export const GAME_RESOLUTION = {
     getGridHeight: getYStep,
 }
 
-const GRID_COLOR = '#76c4ff'
+const GRID_COLOR = '#a1d0ff'
 
 
 

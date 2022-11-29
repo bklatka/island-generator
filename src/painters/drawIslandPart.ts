@@ -19,6 +19,8 @@ import Left2 from '../assets/tiles/left2.png';
 
 
 import { drawImageInGrid } from "./drawImageInGrid";
+import { times } from "lodash-es";
+import { getRandomInRange } from "../utils/getRandomInRange";
 
 export type IslandTiles =
     'center1'
@@ -54,7 +56,41 @@ const TileMap: Record<IslandTiles, string> = {
     left2: Left2,
 }
 
-export function drawIsland(ctx: CanvasRenderingContext2D, tileType: IslandTiles, coord: Coordinates) {
+type Directions = 'top' | 'bottom' | 'left' | 'right'
+
+const IslandParts: Record<Directions | 'center', IslandTiles[]> = {
+    top: ['top1', 'top2'],
+    left: ['left1', 'left2'],
+    bottom: ['bottom1', "bottom2"],
+    right: ['right1', 'right2'],
+    center: ['center1', 'center2', 'center3', 'center4'],
+}
+
+export function drawIslandPart(ctx: CanvasRenderingContext2D, tileType: IslandTiles, coord: Coordinates) {
     const tileToDraw = TileMap[tileType];
     drawImageInGrid(ctx, tileToDraw, coord);
+}
+
+export function drawIslandCenter(ctx: CanvasRenderingContext2D, coord: Coordinates, width: number, height: number) {
+    const parts = IslandParts.center;
+
+    for (let x = 0; x < width; x++) {
+        for (let y = 0; y < height; y++) {
+            const partChosen = parts[getRandomInRange(0, parts.length)];
+            drawIslandPart(ctx, partChosen, { x: coord.x + x, y: coord.y + y });
+        }
+    }
+}
+
+export function drawIslandEdge(ctx: CanvasRenderingContext2D, coord: Coordinates, type: Directions, length: number) {
+    const parts = IslandParts[type];
+
+    times(length, (idx) => {
+        const newPosition = ['left', 'right'].includes(type)
+            ? { x: coord.x, y: coord.y + idx }
+            : { x: coord.x + idx, y: coord.y };
+        const partChosen = parts[getRandomInRange(0, parts.length)];
+
+        drawIslandPart(ctx, partChosen, newPosition);
+    })
 }

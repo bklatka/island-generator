@@ -2,10 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import './App.css';
 import { drawBackground } from "./painters/drawBackground";
 import { drawGameGrid } from "./painters/drawGameGrid";
-import { drawCircle } from "./painters/drawCircle";
-import { drawImageInGrid } from "./painters/drawImageInGrid";
-import { drawIsland } from "./painters/drawIsland";
-
+import { drawRectIsland } from "./painters/drawRectIsland";
 
 
 function App() {
@@ -26,13 +23,8 @@ function App() {
 
         drawBackground(ctx);
         drawGameGrid(ctx);
-        drawCircle(ctx, { x: 5, y: 1 })
 
-
-        drawIsland(ctx, 'topLeft', { x: 6, y: 4 });
-        drawIsland(ctx, 'top1', { x: 7, y: 4 });
-        drawIsland(ctx, 'top2', { x: 8, y: 4 });
-        drawIsland(ctx, 'topRight', { x: 9, y: 4 });
+        drawRectIsland(ctx, { x: 5, y: 4 }, 5, 6);
 
 
     }, [hasLoaded])
