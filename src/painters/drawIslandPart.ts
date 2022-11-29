@@ -16,28 +16,20 @@ import Right1 from '../assets/tiles/right1.png';
 import Right2 from '../assets/tiles/right2.png';
 import Left1 from '../assets/tiles/left1.png';
 import Left2 from '../assets/tiles/left2.png';
+import InnerBottomLeft from '../assets/tiles/innerBottomLeft.png';
+import InnerBottomRight from '../assets/tiles/innerBottomRight.png';
+import InnerTopLeft from '../assets/tiles/innerTopLeft.png';
+import InnerTopRight from '../assets/tiles/innerTopRight.png';
 
 
 import { drawImageInGrid } from "./drawImageInGrid";
 import { times } from "lodash-es";
 import { getRandomInRange } from "../utils/getRandomInRange";
-
-export type IslandTiles =
-    'center1'
-    | 'center2'
-    | 'center3'
-    | 'center4'
-    | 'bottom1'
-    | 'bottom2'
-    | 'bottomLeft'
-    | 'bottomRight'
-    | 'left1'
-    | 'left2'
-    | 'right1'
-    | 'right2' | 'top1' | 'top2' | 'topLeft' | 'topRight'
+import { Directions } from "../types/Directions";
+import { IslandTiles } from "../types/IslandTiles";
 
 
-const TileMap: Record<IslandTiles, string> = {
+export const TileMap: Record<IslandTiles, string> = {
     center1: Center1,
     center2: Center2,
     center3: Center3,
@@ -54,9 +46,12 @@ const TileMap: Record<IslandTiles, string> = {
     right2: Right2,
     left1: Left1,
     left2: Left2,
+    innerBottomLeft: InnerBottomLeft,
+    innerBottomRight: InnerBottomRight,
+    innerTopLeft: InnerTopLeft,
+    innerTopRight: InnerTopRight,
 }
 
-type Directions = 'top' | 'bottom' | 'left' | 'right'
 
 const IslandParts: Record<Directions | 'center', IslandTiles[]> = {
     top: ['top1', 'top2'],

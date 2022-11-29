@@ -3,6 +3,7 @@ import './App.css';
 import { drawBackground } from "./painters/drawBackground";
 import { drawGameGrid } from "./painters/drawGameGrid";
 import { drawRectIsland } from "./painters/drawRectIsland";
+import { drawRandomIsland } from "./painters/drawRandomIsland";
 
 
 function App() {
@@ -24,8 +25,8 @@ function App() {
         drawBackground(ctx);
         drawGameGrid(ctx);
 
-        drawRectIsland(ctx, { x: 5, y: 4 }, 5, 6);
-
+        // drawRectIsland(ctx, { x: 5, y: 4 }, 5, 6);
+        drawRandomIsland(ctx)
 
     }, [hasLoaded])
 
