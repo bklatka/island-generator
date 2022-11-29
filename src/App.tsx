@@ -1,24 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useRef } from 'react';
 import './App.css';
+import { drawBackground } from "./drawers/drawBackground";
+import { drawGameGrid } from "./drawers/drawGameGrid";
+
+
 
 function App() {
+
+    const gameRef = useRef<HTMLCanvasElement>(null);
+
+    const [hasLoaded, setHasLoaded] = React.useState(false)
+    useEffect(() => {
+        setHasLoaded(true)
+    }, []);
+
+    useEffect(() => {
+        if (!hasLoaded) {
+            return;
+        }
+        const canvas = gameRef.current as HTMLCanvasElement;
+        const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+
+        drawBackground(ctx);
+        drawGameGrid(ctx);
+
+    }, [hasLoaded])
+
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <canvas ref={gameRef} width={800} height={600} id={'main'} />
     </div>
   );
 }
