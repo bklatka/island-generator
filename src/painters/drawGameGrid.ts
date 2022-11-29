@@ -68,6 +68,6 @@ export function getGridPosition(ctx: CanvasRenderingContext2D, coord: Coordinate
 
     return [xPos, yPos];
 }
-export function isOutsideGrid(coord: Coordinates) {
-    return coord.x < 0 || coord.y < 0 || coord.x > GAME_RESOLUTION.x || coord.y > GAME_RESOLUTION.y;
+export function isOutsideGrid(coord: Coordinates, padding: number = 0) {
+    return coord.x < padding || coord.y < padding || coord.x > GAME_RESOLUTION.x - padding || coord.y > GAME_RESOLUTION.y - padding;
 }

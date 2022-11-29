@@ -7,9 +7,10 @@ import { Directions } from "../types/Directions";
 import { getRandomFromArray } from "../utils/getRandomFromArray";
 import { isEqual } from "lodash-es";
 import { drawCircle } from "./drawCircle";
+import { start } from "repl";
 
 
-const ISLAND_LENGTH = 10;
+const ISLAND_LENGTH = 30;
 
 const CENTER_TILES = ['center1', 'center2', 'center3', 'center4']
 
@@ -60,16 +61,18 @@ export function drawRandomIsland(ctx: CanvasRenderingContext2D) {
         drawnParts.push(newPart);
     }
 
-    const restWay = findWayHome(drawnParts);
 
-    restWay.forEach((element, idx) => {
-        setTimeout(() => drawCircle(ctx, element.coord), 300 * idx);
+    drawCircle(ctx, startPosition, true)
+
+    const paths = findWayHome(generateRandomPath([startPosition]));
+    paths.forEach((element, idx) => {
+        setTimeout(() => drawCircle(ctx, element), 100 * idx);
     })
 
 
-    drawnParts.forEach(({ tile, coord }) => {
-        drawIslandPart(ctx, tile, coord);
-    })
+    // drawnParts.forEach(({ tile, coord }) => {
+    //     drawIslandPart(ctx, tile, coord);
+    // })
 
 }
 
@@ -175,9 +178,9 @@ function calculateNewPlaceToDraw(drawnElements: DrawnParts[], previousElement: D
     return [null, null];
 }
 
-function findWayHome(drawElements: DrawnParts[]): DrawnParts[] {
-    const finalPoint = drawElements[drawElements.length - 1].coord;
-    const startPoint = drawElements[0].coord;
+function findWayHome(drawElements: Coordinates[]): Coordinates[] {
+    const finalPoint = drawElements[drawElements.length - 1];
+    const startPoint = drawElements[0];
 
 
     // assess what movement is possible by 1
@@ -186,14 +189,15 @@ function findWayHome(drawElements: DrawnParts[]): DrawnParts[] {
          { x: finalPoint.x, y: finalPoint.y + 1 },
          { x: finalPoint.x - 1, y: finalPoint.y },
         { x: finalPoint.x + 1, y: finalPoint.y },
-    ].filter(coords => !drawElements.some(el => isEqual(el.coord, coords)));
+    ].filter(coords => !drawElements.some(el => isEqual(el, coords)));
 
     if (!possiblePoints.length) {
+        console.error('no way home :(')
         return drawElements;
     }
 
     // choose the one that is moving me towards start
-    const results = possiblePoints.map(coord => Math.floor(Math.sqrt(Math.pow(startPoint.x - coord.x, 2) + Math.pow(startPoint.y - coord.y, 2))))
+    const results = possiblePoints.map(coord => Math.sqrt(Math.pow(startPoint.x - coord.x, 2) + Math.pow(startPoint.y - coord.y, 2)))
     const closestPoint = Math.min(...results);
 
 
@@ -203,12 +207,40 @@ function findWayHome(drawElements: DrawnParts[]): DrawnParts[] {
     }
     const bestPoint = possiblePoints[results.indexOf(closestPoint)];
 
-    if (closestPoint === 1) {
-        return [...drawElements, { tile: 'center1', coord: bestPoint }];
+    if (closestPoint < 1.1) {
+        return [...drawElements, bestPoint];
     }
+
+
 
     console.log(`Best point[${closestPoint}] `, bestPoint, `Goal`, startPoint);
     // repeat
-    return findWayHome([...drawElements, { tile: 'center1', coord: bestPoint }])
+    return findWayHome([...drawElements, bestPoint ])
+
+}
+
+
+function generateRandomPath(Points: Coordinates[]): Coordinates[] {
+    const lastPoint = Points[Points.length - 1];
+
+    if (Points.length === ISLAND_LENGTH) {
+        return Points
+    }
+
+    const possiblePoints = [
+        { x: lastPoint.x, y: lastPoint.y - 1 },
+        { x: lastPoint.x, y: lastPoint.y + 1 },
+        { x: lastPoint.x - 1, y: lastPoint.y },
+        { x: lastPoint.x + 1, y: lastPoint.y },
+    ].filter(coords => !Points.some(el => isEqual(el, coords)))
+    .filter(coords => !isOutsideGrid(coords, 1));
+
+    if (!possiblePoints.length) {
+        return Points;
+    }
+
+
+    const nextPoint = getRandomFromArray(possiblePoints);
+    return generateRandomPath([...Points, nextPoint]);
 
 }
