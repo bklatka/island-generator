@@ -4,16 +4,13 @@ import { drawBackground } from "./painters/drawBackground";
 import { drawGameGrid } from "./painters/drawGameGrid";
 import { generateRandomIsland } from "./painters/generateRandomIsland";
 import { drawIsland } from "./painters/drawIsland";
-import { DRAWING_DELAY } from "./constants/timers";
-import { DrawnParts } from "./types/DrawBlock";
 import { times } from "lodash-es";
 import { GAME_CONFIG } from "./constants/GameConfig";
-
-interface Layers {
-    islands: DrawnParts[][],
-    ships: any[];
-}
-
+import { Layers } from "./types/Layers";
+import { getRandomFreePosition } from "./utils/getRandomFreePosition";
+import { getIslandPositions } from "./utils/getIslandPositions";
+import { drawImageInGrid } from "./painters/drawImageInGrid";
+import Ship from './assets/ships/ship1.png'
 
 function App() {
 
@@ -42,16 +39,17 @@ function App() {
             drawGameGrid(ctx);
         }
 
-
-
         times(GAME_CONFIG.ISLAND_COUNT, () => {
             addRandomIsland(layers);
         })
 
+        const shipStartPoint = getRandomFreePosition(getIslandPositions(layers))
+
+        drawImageInGrid(ctx, Ship, shipStartPoint);
 
 
         layers.islands.forEach(island => {
-            drawIsland(ctx, island, DRAWING_DELAY);
+            drawIsland(ctx, island, 10);
         })
 
 

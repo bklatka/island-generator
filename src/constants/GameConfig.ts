@@ -1,5 +1,5 @@
 export const GAME_CONFIG = {
-    GAME_RESOLUTION: 48,
-    ISLAND_COUNT: 5,
+    GAME_RESOLUTION: 24,
+    ISLAND_COUNT: 2,
     SHOW_GRID: true,
 }

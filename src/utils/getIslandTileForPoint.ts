@@ -1,12 +1,9 @@
 import { Coordinates } from "../types/Coordinates";
-import { getGridAroundPoint, getStructuredGridAroundPoint } from "./getGridAroundPoint";
+import { getGridAroundPoint } from "./getGridAroundPoint";
 import { isOutsideGrid } from "../painters/drawGameGrid";
 import { isPointInShape } from "./isPointInShape";
 import { IslandTiles } from "../types/IslandTiles";
 import { getRandomFromArray } from "./getRandomFromArray";
-
-
-
 
 
 const TILE_TO_RESULT_MAP: Record<string, IslandTiles[]> = {
