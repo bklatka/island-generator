@@ -8,6 +8,12 @@ import { getRandomFromArray } from "../utils/getRandomFromArray";
 import { isEqual } from "lodash-es";
 import { drawCircle } from "./drawCircle";
 import { start } from "repl";
+import { getDistanceBetweenPoints } from "../utils/getDistanceBetweenPoints";
+import { findShapeEdges } from "../shapeCalculators/findShapeEdges";
+import { getPointsAround } from "../shapeCalculators/getPointsAround";
+import { closeOpenShape } from "../shapeCalculators/closeOpenShape";
+import { generateRandomPath } from "../shapeCalculators/generateRandomPath";
+import { getOutsideOfShape } from "../shapeCalculators/getOutsideOfShape";
 
 
 const ISLAND_LENGTH = 30;
@@ -31,50 +37,25 @@ export function drawRandomIsland(ctx: CanvasRenderingContext2D) {
     drawnParts.push({ tile: startTile, coord: startPosition, start: true, });
 
 
-    for (let i = 0; i < ISLAND_LENGTH; i++) {
-        const previousTile = drawnParts[i]
-
-        const [newCord, directionToGo] = calculateNewPlaceToDraw(drawnParts, previousTile);
-
-        if (newCord === null || directionToGo === null) {
-            break;
-        }
-
-        const reversedDirection = REVERSED_DIRECTION_MAP[directionToGo];
-        // find the right tile to go to the selected direction
-        const possibleTiles: IslandTiles[] = Object.entries(PLACEMENT_RULES)
-            .filter(([tileName]) => !CENTER_TILES.includes(tileName))
-            .filter(([tileName, directions]) => directions.includes(reversedDirection))
-            .filter(([tileName]) => {
-                const previousSandDirections = SAND_DIRECTIONS[previousTile.tile];
-                const currentSandDirections = SAND_DIRECTIONS[tileName as IslandTiles];
-                return currentSandDirections.some(direction => previousSandDirections.includes(direction))
-            })
-            .map(([tileName]) => tileName) as IslandTiles[];
-        const selectedTile = getRandomFromArray<IslandTiles>(possibleTiles);
-
-        const newPart = { tile: selectedTile, coord: newCord };
 
 
-        console.log(`going ${directionToGo} with ${selectedTile} from ${previousTile.coord.x}:${previousTile.coord.y} for ${newCord.x}:${newCord.y}`)
+    const paths = generateRandomIslandShape(startPosition);
 
-        drawnParts.push(newPart);
-    }
-
+    const outsidePath = getOutsideOfShape(paths);
 
     drawCircle(ctx, startPosition, true)
-
-    const paths = findWayHome(generateRandomPath([startPosition]));
-
-    const edgesToDraw = findIslandEdges(paths);
-
-    paths.filter(path => !edgesToDraw.map(e => e.coord).some(edge => isEqual(path, edge))).forEach((element, idx) => {
-        setTimeout(() => drawCircle(ctx, element), 100 * idx);
+    paths.forEach((element, idx) => {
+        setTimeout(() => drawCircle(ctx, element, true), 100 * idx);
     })
 
-    edgesToDraw.forEach((element, idx) => {
-        setTimeout(() => drawIslandPart(ctx, element.tile, element.coord), 100 * idx);
+    outsidePath.forEach((element, idx) => {
+        setTimeout(() => drawCircle(ctx, element, false, '#00671c'), 100 * idx);
     })
+
+    // const edgesToDraw = findIslandEdges(paths);
+    // edgesToDraw.forEach((element, idx) => {
+    //     setTimeout(() => drawIslandPart(ctx, element.tile, element.coord), 100 * idx);
+    // })
 
 
 }
@@ -156,7 +137,7 @@ const SAND_DIRECTIONS: Record<IslandTiles, Directions[]> = {
     topRight: ['right', 'top'],
     topLeft: ['left', 'top'],
     bottomRight: ['right', 'bottom'],
-    bottomLeft: [], //['left', 'bottom'],
+    bottomLeft: ['left', 'bottom'],
     innerBottomLeft: [], //['bottom', 'left'],
     innerTopRight: [], //['top', 'right'],
     innerBottomRight: [], //['bottom', 'right'],
@@ -181,75 +162,7 @@ function calculateNewPlaceToDraw(drawnElements: DrawnParts[], previousElement: D
     return [null, null];
 }
 
-function findWayHome(drawElements: Coordinates[]): Coordinates[] {
-    const finalPoint = drawElements[drawElements.length - 1];
-    const startPoint = drawElements[0];
 
-
-    // assess what movement is possible by 1
-    const possiblePoints = [
-        { x: finalPoint.x, y: finalPoint.y - 1 },
-         { x: finalPoint.x, y: finalPoint.y + 1 },
-         { x: finalPoint.x - 1, y: finalPoint.y },
-        { x: finalPoint.x + 1, y: finalPoint.y },
-    ].filter(coords => !drawElements.some(el => isEqual(el, coords)));
-
-    if (!possiblePoints.length) {
-        console.error('no way home :(')
-        return drawElements;
-    }
-
-    // choose the one that is moving me towards start
-    const results = possiblePoints.map(coord => Math.sqrt(Math.pow(startPoint.x - coord.x, 2) + Math.pow(startPoint.y - coord.y, 2)))
-    const closestPoint = Math.min(...results);
-
-
-    if (drawElements.length > 100) {
-        console.warn('overflow')
-        return drawElements;
-    }
-    const bestPoint = possiblePoints[results.indexOf(closestPoint)];
-
-    if (closestPoint < 1.1) {
-        return [...drawElements, bestPoint];
-    }
-
-
-
-    console.log(`Best point[${closestPoint}] `, bestPoint, `Goal`, startPoint);
-    // repeat
-    return findWayHome([...drawElements, bestPoint ])
-
-}
-
-
-function generateRandomPath(Points: Coordinates[]): Coordinates[] {
-    const lastPoint = Points[Points.length - 1];
-
-    if (Points.length === ISLAND_LENGTH) {
-        return Points
-    }
-
-    const possiblePoints = Object.values(getPointsAround(lastPoint)).filter(coords => !Points.some(el => isEqual(el, coords)))
-    .filter(coords => !isOutsideGrid(coords, 1));
-
-    if (!possiblePoints.length) {
-        return Points;
-    }
-
-
-    const nextPoint = getRandomFromArray(possiblePoints);
-    return generateRandomPath([...Points, nextPoint]);
-}
-
-function getPointsAround(point: Coordinates): Record<Directions, Coordinates> {
-    return {
-        top: { x: point.x, y: point.y - 1 },
-        bottom: { x: point.x, y: point.y + 1 },
-        left: { x: point.x - 1, y: point.y },
-        right: { x: point.x + 1, y: point.y },
-    }
-}
 
 function findIslandEdges(Points: Coordinates[]): DrawnParts[] {
     const edges: DrawnParts[] = [];
@@ -260,21 +173,25 @@ function findIslandEdges(Points: Coordinates[]): DrawnParts[] {
         if (!freePointsAround.length) {
             return false;
         }
-        if (freePointsAround.length === 1) {
-            console.log('Found free point', point, freePointsAround)
-        }
 
 
         const pointSandDirections = freePointsAround.map(([direction]) => direction);
         const matchingTiles = Object.entries(SAND_DIRECTIONS).filter(([tileName, sandDirections]) => {
             return isEqual(pointSandDirections, sandDirections);
         }).map(([tileName]) => tileName) as IslandTiles[];
+        console.log('for', point, matchingTiles)
         edges.push({ tile: getRandomFromArray<IslandTiles>(matchingTiles), coord: point });
     })
 
     return edges;
 }
 
-function isGridEmpty(elements: Coordinates[], point: Coordinates): boolean {
-    return !elements.some(e => isEqual(e, point))
+
+function generateRandomIslandShape(startPoint: Coordinates): Coordinates[] {
+    const edge = closeOpenShape(generateRandomPath([startPoint], ISLAND_LENGTH));
+    if (!edge.length) {
+        return generateRandomIslandShape(startPoint);
+    }
+    return edge;
 }
+
