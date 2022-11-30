@@ -38,17 +38,9 @@ function App() {
 
 
 
-        layers.islands.push(
-            generateRandomIsland(ctx, layers.islands.flatMap(part => part).map(part => part.coord))
-        );
-
-        layers.islands.push(
-            generateRandomIsland(ctx, layers.islands.flatMap(part => part).map(part => part.coord))
-        );
-
-        layers.islands.push(
-            generateRandomIsland(ctx, layers.islands.flatMap(part => part).map(part => part.coord))
-        );
+        addRandomIsland(layers);
+        addRandomIsland(layers);
+        addRandomIsland(layers);
 
 
         layers.islands.forEach(island => {
@@ -68,3 +60,10 @@ function App() {
 }
 
 export default App;
+
+
+function addRandomIsland(layers: Layers) {
+    layers.islands.push(
+        generateRandomIsland(layers.islands.flatMap(part => part).map(part => part.coord))
+    );
+}

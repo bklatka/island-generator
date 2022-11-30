@@ -15,7 +15,7 @@ import { isPointInShape } from "../utils/isPointInShape";
 const ISLAND_LENGTH = 30;
 
 
-export function generateRandomIsland(ctx: CanvasRenderingContext2D, forbiddenZone: Coordinates[] = [], size: number = ISLAND_LENGTH): DrawnParts[] {
+export function generateRandomIsland(forbiddenZone: Coordinates[] = [], size: number = ISLAND_LENGTH): DrawnParts[] {
     const drawnParts: DrawnParts[] = [];
     const startPosition = getRandomStartPosition(forbiddenZone);
 
