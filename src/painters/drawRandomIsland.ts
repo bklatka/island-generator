@@ -1,7 +1,7 @@
 import { GAME_RESOLUTION, isOutsideGrid } from "./drawGameGrid";
 import { getRandomInRange } from "../utils/getRandomInRange";
 import { Coordinates } from "../types/Coordinates";
-import { TileMap } from "./drawIslandPart";
+import { drawIslandPart, TileMap } from "./drawIslandPart";
 import { IslandTiles } from "../types/IslandTiles";
 import { Directions } from "../types/Directions";
 import { getRandomFromArray } from "../utils/getRandomFromArray";
@@ -11,6 +11,10 @@ import { getPointsAround } from "../shapeCalculators/getPointsAround";
 import { closeOpenShape } from "../shapeCalculators/closeOpenShape";
 import { generateRandomPath } from "../shapeCalculators/generateRandomPath";
 import { fillMissingGapsInShape } from "../shapeCalculators/fillInnerShape";
+import { isPointInShape } from "../utils/isPointInShape";
+import { moveByDirection } from "../utils/movePointByDirection";
+import { getGridAroundPoint } from "../utils/getGridAroundPoint";
+import { getIslandTileForPoint } from "../utils/getIslandTileForPoint";
 
 
 const ISLAND_LENGTH = 30;
@@ -38,10 +42,17 @@ export function drawRandomIsland(ctx: CanvasRenderingContext2D) {
 
     const islandShape = generateRandomIslandShape(startPosition);
 
+    const blocks = islandShape.map(point => getIslandTileForPoint(islandShape, point));
 
-    drawCircle(ctx, startPosition, false)
-    islandShape.forEach((element, idx) => {
-        setTimeout(() => drawCircle(ctx, element, false), 20 * idx);
+    // const islandCenter = fillIslandCenters(islandShape);
+
+    // drawCircle(ctx, startPosition, false)
+    // islandShape.forEach((element, idx) => {
+    //     setTimeout(() => drawCircle(ctx, element, false), 20 * idx);
+    // })
+
+    blocks.forEach((element, idx) => {
+        setTimeout(() => drawIslandPart(ctx, element.tile, element.coord), 20 * idx);
     })
 
 
@@ -55,27 +66,6 @@ function getRandomStartPosition(): Coordinates {
         x: getRandomInRange(START_PADDING, x - START_PADDING),
         y: getRandomInRange(START_PADDING, y - START_PADDING),
     }
-}
-
-function moveByDirection(coord: Coordinates, direction: Directions) {
-    const newCord = { ...coord };
-    if (direction === 'left') {
-        newCord.x = coord.x - 1;
-    }
-    if (direction === 'right') {
-        newCord.x = coord.x + 1;
-    }
-    if (direction === 'top') {
-        newCord.y = coord.y - 1
-    }
-    if (direction === 'bottom') {
-        newCord.y = coord.y + 1;
-    }
-
-    if (newCord.x < 0 || newCord.y < 0 || newCord.x > GAME_RESOLUTION.x - 1 || newCord.y > GAME_RESOLUTION.y - 1) {
-        return coord;
-    }
-    return newCord;
 }
 
 const PLACEMENT_RULES: Record<IslandTiles, Directions[]> = {
@@ -175,4 +165,26 @@ function generateRandomIslandShape(startPoint: Coordinates): Coordinates[] {
     const inside = fillMissingGapsInShape(edge);
     return [...edge, ...inside];
 }
+
+function fillIslandCenters(shape: Coordinates[]): DrawnParts[] {
+
+    const centerBlocks: Coordinates[] = [];
+    shape.forEach(point => {
+        const grid = getGridAroundPoint(point);
+
+        const isCenter = grid.every(gridPoint => {
+            return isOutsideGrid(gridPoint) || isPointInShape(shape, gridPoint);
+        })
+
+        if (isCenter) {
+            centerBlocks.push(point);
+        }
+    })
+
+    return centerBlocks.map(coords => ({
+        coord: coords,
+        tile: getRandomFromArray<IslandTiles>(['center1', 'center2', 'center3', 'center4'])
+    }));
+}
+
 
