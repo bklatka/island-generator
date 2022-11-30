@@ -1,19 +1,16 @@
 import { GAME_RESOLUTION, isOutsideGrid } from "./drawGameGrid";
 import { getRandomInRange } from "../utils/getRandomInRange";
 import { Coordinates } from "../types/Coordinates";
-import { drawIslandPart, TileMap } from "./drawIslandPart";
+import { TileMap } from "./drawIslandPart";
 import { IslandTiles } from "../types/IslandTiles";
 import { Directions } from "../types/Directions";
 import { getRandomFromArray } from "../utils/getRandomFromArray";
 import { isEqual } from "lodash-es";
 import { drawCircle } from "./drawCircle";
-import { start } from "repl";
-import { getDistanceBetweenPoints } from "../utils/getDistanceBetweenPoints";
-import { findShapeEdges } from "../shapeCalculators/findShapeEdges";
 import { getPointsAround } from "../shapeCalculators/getPointsAround";
 import { closeOpenShape } from "../shapeCalculators/closeOpenShape";
 import { generateRandomPath } from "../shapeCalculators/generateRandomPath";
-import { getOutsideOfShape } from "../shapeCalculators/getOutsideOfShape";
+import { fillMissingGapsInShape } from "../shapeCalculators/fillInnerShape";
 
 
 const ISLAND_LENGTH = 30;
@@ -39,23 +36,13 @@ export function drawRandomIsland(ctx: CanvasRenderingContext2D) {
 
 
 
-    const paths = generateRandomIslandShape(startPosition);
+    const islandShape = generateRandomIslandShape(startPosition);
 
-    const outsidePath = getOutsideOfShape(paths);
 
-    drawCircle(ctx, startPosition, true)
-    paths.forEach((element, idx) => {
-        setTimeout(() => drawCircle(ctx, element, true), 100 * idx);
+    drawCircle(ctx, startPosition, false)
+    islandShape.forEach((element, idx) => {
+        setTimeout(() => drawCircle(ctx, element, false), 20 * idx);
     })
-
-    outsidePath.forEach((element, idx) => {
-        setTimeout(() => drawCircle(ctx, element, false, '#00671c'), 100 * idx);
-    })
-
-    // const edgesToDraw = findIslandEdges(paths);
-    // edgesToDraw.forEach((element, idx) => {
-    //     setTimeout(() => drawIslandPart(ctx, element.tile, element.coord), 100 * idx);
-    // })
 
 
 }
@@ -68,13 +55,6 @@ function getRandomStartPosition(): Coordinates {
         x: getRandomInRange(START_PADDING, x - START_PADDING),
         y: getRandomInRange(START_PADDING, y - START_PADDING),
     }
-}
-
-const REVERSED_DIRECTION_MAP: Record<Directions, Directions> = {
-    top: 'bottom',
-    bottom: 'top',
-    left: 'right',
-    right: 'left',
 }
 
 function moveByDirection(coord: Coordinates, direction: Directions) {
@@ -192,6 +172,7 @@ function generateRandomIslandShape(startPoint: Coordinates): Coordinates[] {
     if (!edge.length) {
         return generateRandomIslandShape(startPoint);
     }
-    return edge;
+    const inside = fillMissingGapsInShape(edge);
+    return [...edge, ...inside];
 }
 
