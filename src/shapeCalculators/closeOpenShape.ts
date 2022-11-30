@@ -1,8 +1,9 @@
 import { Coordinates } from "../types/Coordinates";
 import { isEqual } from "lodash-es";
+import { isPointInShape } from "../utils/isPointInShape";
 
 
-export function closeOpenShape(points: Coordinates[]): Coordinates[] {
+export function closeOpenShape(points: Coordinates[], forbiddenZone: Coordinates[]): Coordinates[] {
     const finalPoint = points[points.length - 1];
     const startPoint = points[0];
 
@@ -13,7 +14,7 @@ export function closeOpenShape(points: Coordinates[]): Coordinates[] {
         { x: finalPoint.x, y: finalPoint.y + 1 },
         { x: finalPoint.x - 1, y: finalPoint.y },
         { x: finalPoint.x + 1, y: finalPoint.y },
-    ].filter(coords => !points.some(el => isEqual(el, coords)));
+    ].filter(coords => !isPointInShape(points, coords) && !isPointInShape(forbiddenZone, coords));
 
     if (!possiblePoints.length) {
         console.error('Cannot close shape :(')
@@ -39,6 +40,6 @@ export function closeOpenShape(points: Coordinates[]): Coordinates[] {
 
     console.log(`Best point[${closestPoint}] `, bestPoint, `Goal`, startPoint);
     // repeat
-    return closeOpenShape([...points, bestPoint ])
+    return closeOpenShape([...points, bestPoint ], forbiddenZone)
 
 }

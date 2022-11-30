@@ -5,7 +5,12 @@ import { drawGameGrid } from "./painters/drawGameGrid";
 import { generateRandomIsland } from "./painters/generateRandomIsland";
 import { drawIsland } from "./painters/drawIsland";
 import { DRAWING_DELAY } from "./constants/timers";
+import { DrawnParts } from "./types/DrawBlock";
 
+interface Layers {
+    islands: DrawnParts[][],
+    ships: any[];
+}
 
 function App() {
 
@@ -20,14 +25,36 @@ function App() {
         if (!hasLoaded) {
             return;
         }
+
+        const layers: Layers = {
+            islands: [],
+            ships: []
+        }
         const canvas = gameRef.current as HTMLCanvasElement;
         const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
         drawBackground(ctx);
         drawGameGrid(ctx);
 
-        const islandBlocks = generateRandomIsland(ctx)
-        drawIsland(ctx, islandBlocks, DRAWING_DELAY);
+
+
+        layers.islands.push(
+            generateRandomIsland(ctx, layers.islands.flatMap(part => part).map(part => part.coord))
+        );
+
+        layers.islands.push(
+            generateRandomIsland(ctx, layers.islands.flatMap(part => part).map(part => part.coord))
+        );
+
+        layers.islands.push(
+            generateRandomIsland(ctx, layers.islands.flatMap(part => part).map(part => part.coord))
+        );
+
+
+        layers.islands.forEach(island => {
+            drawIsland(ctx, island, DRAWING_DELAY);
+        })
+
 
     }, [hasLoaded])
 
