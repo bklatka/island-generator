@@ -65,14 +65,17 @@ export function drawRandomIsland(ctx: CanvasRenderingContext2D) {
     drawCircle(ctx, startPosition, true)
 
     const paths = findWayHome(generateRandomPath([startPosition]));
-    paths.forEach((element, idx) => {
+
+    const edgesToDraw = findIslandEdges(paths);
+
+    paths.filter(path => !edgesToDraw.map(e => e.coord).some(edge => isEqual(path, edge))).forEach((element, idx) => {
         setTimeout(() => drawCircle(ctx, element), 100 * idx);
     })
 
+    edgesToDraw.forEach((element, idx) => {
+        setTimeout(() => drawIslandPart(ctx, element.tile, element.coord), 100 * idx);
+    })
 
-    // drawnParts.forEach(({ tile, coord }) => {
-    //     drawIslandPart(ctx, tile, coord);
-    // })
 
 }
 
@@ -138,26 +141,26 @@ const PLACEMENT_RULES: Record<IslandTiles, Directions[]> = {
 }
 
 const SAND_DIRECTIONS: Record<IslandTiles, Directions[]> = {
-    bottom1: ['top'],
-    bottom2: ['top'],
-    top1: ['bottom'],
-    top2: ['bottom'],
-    left1: ['right'],
-    left2: ['right'],
-    right1: ['left'],
-    right2: ['left'],
+    bottom1: ['bottom'],
+    bottom2: ['bottom'],
+    top1: ['top'],
+    top2: ['top'],
+    left1: ['left'],
+    left2: ['left'],
+    right1: ['right'],
+    right2: ['right'],
     center1: [],
     center2: [],
     center3: [],
     center4: [],
-    topRight: ['left', 'bottom'],
-    topLeft: ['bottom', 'right'],
-    bottomRight: ['top', 'left'],
-    bottomLeft: ['top', 'right'],
-    innerBottomLeft: ['top', 'right'],
-    innerTopRight: ['left', 'bottom'],
-    innerBottomRight: ['top', 'left'],
-    innerTopLeft: ['bottom', 'right'],
+    topRight: ['right', 'top'],
+    topLeft: ['left', 'top'],
+    bottomRight: ['right', 'bottom'],
+    bottomLeft: [], //['left', 'bottom'],
+    innerBottomLeft: [], //['bottom', 'left'],
+    innerTopRight: [], //['top', 'right'],
+    innerBottomRight: [], //['bottom', 'right'],
+    innerTopLeft: [], //['top', 'left'],
 }
 
 function calculateNewPlaceToDraw(drawnElements: DrawnParts[], previousElement: DrawnParts): [Coordinates, Directions]|[null, null] {
@@ -227,12 +230,7 @@ function generateRandomPath(Points: Coordinates[]): Coordinates[] {
         return Points
     }
 
-    const possiblePoints = [
-        { x: lastPoint.x, y: lastPoint.y - 1 },
-        { x: lastPoint.x, y: lastPoint.y + 1 },
-        { x: lastPoint.x - 1, y: lastPoint.y },
-        { x: lastPoint.x + 1, y: lastPoint.y },
-    ].filter(coords => !Points.some(el => isEqual(el, coords)))
+    const possiblePoints = Object.values(getPointsAround(lastPoint)).filter(coords => !Points.some(el => isEqual(el, coords)))
     .filter(coords => !isOutsideGrid(coords, 1));
 
     if (!possiblePoints.length) {
@@ -242,5 +240,41 @@ function generateRandomPath(Points: Coordinates[]): Coordinates[] {
 
     const nextPoint = getRandomFromArray(possiblePoints);
     return generateRandomPath([...Points, nextPoint]);
+}
 
+function getPointsAround(point: Coordinates): Record<Directions, Coordinates> {
+    return {
+        top: { x: point.x, y: point.y - 1 },
+        bottom: { x: point.x, y: point.y + 1 },
+        left: { x: point.x - 1, y: point.y },
+        right: { x: point.x + 1, y: point.y },
+    }
+}
+
+function findIslandEdges(Points: Coordinates[]): DrawnParts[] {
+    const edges: DrawnParts[] = [];
+    Points.filter((point, index, allPoints) => {
+        const freePointsAround = Object.entries(getPointsAround(point))
+            .filter(([direction, coords]) => !allPoints.some(existingCoords => isEqual(existingCoords, coords)))
+
+        if (!freePointsAround.length) {
+            return false;
+        }
+        if (freePointsAround.length === 1) {
+            console.log('Found free point', point, freePointsAround)
+        }
+
+
+        const pointSandDirections = freePointsAround.map(([direction]) => direction);
+        const matchingTiles = Object.entries(SAND_DIRECTIONS).filter(([tileName, sandDirections]) => {
+            return isEqual(pointSandDirections, sandDirections);
+        }).map(([tileName]) => tileName) as IslandTiles[];
+        edges.push({ tile: getRandomFromArray<IslandTiles>(matchingTiles), coord: point });
+    })
+
+    return edges;
+}
+
+function isGridEmpty(elements: Coordinates[], point: Coordinates): boolean {
+    return !elements.some(e => isEqual(e, point))
 }
