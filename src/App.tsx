@@ -2,8 +2,9 @@ import React, { useEffect, useRef } from 'react';
 import './App.css';
 import { drawBackground } from "./painters/drawBackground";
 import { drawGameGrid } from "./painters/drawGameGrid";
-import { drawRectIsland } from "./painters/drawRectIsland";
-import { drawRandomIsland } from "./painters/drawRandomIsland";
+import { generateRandomIsland } from "./painters/generateRandomIsland";
+import { drawIsland } from "./painters/drawIsland";
+import { DRAWING_DELAY } from "./constants/timers";
 
 
 function App() {
@@ -25,8 +26,8 @@ function App() {
         drawBackground(ctx);
         drawGameGrid(ctx);
 
-        // drawRectIsland(ctx, { x: 5, y: 4 }, 5, 6);
-        drawRandomIsland(ctx)
+        const islandBlocks = generateRandomIsland(ctx)
+        drawIsland(ctx, islandBlocks, DRAWING_DELAY);
 
     }, [hasLoaded])
 
