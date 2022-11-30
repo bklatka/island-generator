@@ -6,11 +6,14 @@ import { generateRandomIsland } from "./painters/generateRandomIsland";
 import { drawIsland } from "./painters/drawIsland";
 import { DRAWING_DELAY } from "./constants/timers";
 import { DrawnParts } from "./types/DrawBlock";
+import { times } from "lodash-es";
+import { GAME_CONFIG } from "./constants/GameConfig";
 
 interface Layers {
     islands: DrawnParts[][],
     ships: any[];
 }
+
 
 function App() {
 
@@ -34,13 +37,17 @@ function App() {
         const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
         drawBackground(ctx);
-        drawGameGrid(ctx);
+
+        if (GAME_CONFIG.SHOW_GRID) {
+            drawGameGrid(ctx);
+        }
 
 
 
-        addRandomIsland(layers);
-        addRandomIsland(layers);
-        addRandomIsland(layers);
+        times(GAME_CONFIG.ISLAND_COUNT, () => {
+            addRandomIsland(layers);
+        })
+
 
 
         layers.islands.forEach(island => {

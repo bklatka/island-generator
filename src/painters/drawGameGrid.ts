@@ -1,10 +1,11 @@
 import { times } from 'lodash-es'
 import { Coordinates } from "../types/Coordinates";
+import { GAME_CONFIG } from "../constants/GameConfig";
 // recommended resolutions
 // 48,
 
 const RATIO = [4, 3];
-const X_RESOLUTION = 24;
+const X_RESOLUTION = GAME_CONFIG.GAME_RESOLUTION;
 const Y_RESOLUTION = X_RESOLUTION/RATIO[0] * RATIO[1];
 
 

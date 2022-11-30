@@ -17,7 +17,6 @@ export function closeOpenShape(points: Coordinates[], forbiddenZone: Coordinates
     ].filter(coords => !isPointInShape(points, coords) && !isPointInShape(forbiddenZone, coords));
 
     if (!possiblePoints.length) {
-        console.error('Cannot close shape :(')
         return [];
     }
 
@@ -38,7 +37,7 @@ export function closeOpenShape(points: Coordinates[], forbiddenZone: Coordinates
 
 
 
-    console.log(`Best point[${closestPoint}] `, bestPoint, `Goal`, startPoint);
+
     // repeat
     return closeOpenShape([...points, bestPoint ], forbiddenZone)
 
