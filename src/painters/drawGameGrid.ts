@@ -63,12 +63,7 @@ function getYStep(ctx: CanvasRenderingContext2D): number {
     return height/Y_RESOLUTION;
 }
 
-export function getGridPosition(ctx: CanvasRenderingContext2D, coord: Coordinates): [number, number] {
-    const xPos = getXStep(ctx) * coord.x;
-    const yPos = getYStep(ctx) * coord.y;
 
-    return [xPos, yPos];
-}
 export function isOutsideGrid(coord: Coordinates, padding: number = 0) {
     return coord.x < padding || coord.y < padding || coord.x > GAME_RESOLUTION.x - padding || coord.y > GAME_RESOLUTION.y - padding;
 }

@@ -11,6 +11,7 @@ import { moveByDirection } from "../utils/movePointByDirection";
 import { getRandomFreePosition } from "../shapeCalculators/getRandomFreePosition";
 import { drawCircle } from "../painters/drawCircle";
 import { Directions } from "../types/Directions";
+import { getGridCenterInPx } from "../utils/getGridCenterInPx";
 
 export type ShipTypes = 1|2|3|4;
 
@@ -49,6 +50,7 @@ export class Ship extends Entity {
     }
 
     update() {
+        this.game.debug.playerPosition = this.position;
         const pressedButton: string|undefined = Object.entries(this.game.controls.player).find(([key, isPressed]) => isPressed)?.[0]
         if (pressedButton) {
             this.nextMove = ControlsToMove[pressedButton];
@@ -57,6 +59,7 @@ export class Ship extends Entity {
 
         if (this.game.ticks === this.moveTick + 1 && this.nextMove) {
             this.position = moveByDirection(this.position, this.nextMove, getIslandPositions(this.game.layers))
+
             this.nextMove = null;
         }
     }

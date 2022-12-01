@@ -1,9 +1,10 @@
 import { Coordinates } from "../types/Coordinates";
-import { GAME_RESOLUTION, getGridPosition } from "./drawGameGrid";
+import { GAME_RESOLUTION } from "./drawGameGrid";
+import { gridToPx } from "../utils/gridToPx";
 
 
 export function drawImageInGridWithSrc(ctx: CanvasRenderingContext2D, image: string, coord: Coordinates) {
-    const [posX, posY] = getGridPosition(ctx, coord);
+    const [posX, posY] = gridToPx(ctx, coord);
     const { getGridWidth, getGridHeight } = GAME_RESOLUTION
 
     const img = new Image();
@@ -14,7 +15,7 @@ export function drawImageInGridWithSrc(ctx: CanvasRenderingContext2D, image: str
 }
 
 export function drawImageInGrid(ctx: CanvasRenderingContext2D, image: HTMLImageElement, coord: Coordinates) {
-    const [posX, posY] = getGridPosition(ctx, coord);
+    const [posX, posY] = gridToPx(ctx, coord);
     const { getGridWidth, getGridHeight } = GAME_RESOLUTION
 
     ctx.drawImage(image, posX, posY, getGridWidth(ctx), getGridHeight(ctx));

@@ -1,5 +1,7 @@
 import { Layers } from "../types/Layers";
 import { Entity } from "./Entity";
+import { GAME_CONFIG } from "../constants/GameConfig";
+import { gridToPx, pxToGrid } from "../utils/gridToPx";
 
 
 export interface GameControls {
@@ -16,6 +18,9 @@ export class GameEngine {
     public layers: Layers;
     public entities: Entity[] = [];
     public ticks: number = 0;
+    public debug: any = {
+        debug: 'on'
+    };
     public controls: GameControls = {
         player: {
             left: false,
@@ -49,6 +54,11 @@ export class GameEngine {
     private listenForInputs() {
         document.addEventListener('keydown', this.onKeyDown.bind(this), false)
         document.addEventListener('keyup', this.onKeyUp.bind(this), false)
+        this.ctx.canvas.addEventListener('mousemove', ev => {
+
+            const mouseGridPosition = pxToGrid(this.ctx,ev.offsetX, ev.offsetY)
+            this.debug.mouse = mouseGridPosition;
+        })
     }
 
     private onKeyDown(ev: KeyboardEvent) {
@@ -106,9 +116,19 @@ export class GameEngine {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         this.ctx.save();
 
+
+
         this.entities.forEach((entity) => {
             entity.draw();
         })
+
+        if (GAME_CONFIG.DEBUG) {
+            Object.entries(this.debug).forEach(([key, value], index) => {
+                this.ctx.font = "10px Arial"
+                this.ctx.fillStyle = '#000000'
+                this.ctx.fillText(`${key}: ${JSON.stringify(value)}`, 0, 10 * index + 10);
+            })
+        }
     }
 
 
