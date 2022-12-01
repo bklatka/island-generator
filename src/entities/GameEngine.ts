@@ -101,6 +101,12 @@ export class GameEngine {
             case "Period":
                 player1.shootLeft = true;
                 break;
+            case "KeyQ":
+                player2.shootLeft = true;
+                break;
+            case "KeyE":
+                player2.shootRight = true;
+                break;
         }
         this.debug.pressedKey = ev.code;
         this.debug.player1Controls = this.controls.player1;
@@ -139,6 +145,12 @@ export class GameEngine {
                 break;
             case "Period":
                 player1.shootLeft = false;
+                break;
+            case "KeyQ":
+                player2.shootLeft = false;
+                break;
+            case "KeyE":
+                player2.shootRight = false;
                 break;
         }
     }
