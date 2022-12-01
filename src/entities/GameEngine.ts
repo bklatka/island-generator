@@ -62,7 +62,6 @@ export class GameEngine {
     }
 
     private onKeyDown(ev: KeyboardEvent) {
-        console.log('keydown', ev.code)
         switch (ev.code) {
             case "ArrowLeft":
             case "KeyA":
@@ -81,6 +80,7 @@ export class GameEngine {
                 this.controls.player.down = true;
                 break;
         }
+        this.debug.playerControls = this.controls.player;
     }
 
     private onKeyUp(ev: KeyboardEvent) {
@@ -106,6 +106,7 @@ export class GameEngine {
 
     private update() {
         this.ticks++;
+        this.debug.ticks = this.ticks;
 
         this.entities.forEach(entity => {
             entity.update();

@@ -36,6 +36,7 @@ export class Ship extends Entity {
     public position: Coordinates;
     public shipType: ShipTypes = 1;
     private nextMove: Directions|null = null;
+    private previousMove: Directions = 'bottom';
     private moveTick: number = 0;
     private shipImage: HTMLImageElement;
 
@@ -48,16 +49,29 @@ export class Ship extends Entity {
     }
 
     draw() {
+        this.rotateShip(this.previousMove, (shipCords) => {
+            drawImageInGrid(this.game.ctx, this.shipImage, shipCords);
+        })
+    }
+
+    rotateShip(direction: Directions, callback: (newCords: Coordinates) => void) {
+        const angles = {
+            top: 180,
+            left: 90,
+            right: 270,
+            bottom: 0,
+        }
+        const angle = angles[direction];
+
         const { ctx } = this.game;
         ctx.save();
 
         const rotateOrigin = gridCenterToPx(ctx, this.position);
         ctx.translate(...rotateOrigin)
-        ctx.rotate(90 * Math.PI / 180);
-
-        drawImageInGrid(this.game.ctx, this.shipImage, { x: -0.5, y: -0.5 });
-
+        ctx.rotate(angle * Math.PI / 180);
+        callback({ x: -0.5, y: -0.5 })
         ctx.restore();
+
     }
 
     update() {
@@ -65,6 +79,7 @@ export class Ship extends Entity {
         const pressedButton: string|undefined = Object.entries(this.game.controls.player).find(([key, isPressed]) => isPressed)?.[0]
         if (pressedButton) {
             this.nextMove = ControlsToMove[pressedButton];
+            this.previousMove = this.nextMove;
             this.moveTick = this.game.ticks;
         }
 
