@@ -20,3 +20,9 @@ export function drawImageInGrid(ctx: CanvasRenderingContext2D, image: HTMLImageE
 
     ctx.drawImage(image, posX, posY, getGridWidth(ctx), getGridHeight(ctx));
 }
+
+export function drawImageOnPx(ctx: CanvasRenderingContext2D, image: HTMLImageElement, x: number, y: number) {
+    const { getGridWidth, getGridHeight } = GAME_RESOLUTION
+
+    ctx.drawImage(image, x, y, getGridWidth(ctx), getGridHeight(ctx));
+}

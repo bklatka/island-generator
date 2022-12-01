@@ -5,7 +5,7 @@ import Ship1 from '../assets/ships/ship1.png';
 import Ship2 from '../assets/ships/ship2.png';
 import Ship3 from '../assets/ships/ship3.png';
 import Ship4 from '../assets/ships/ship4.png';
-import { drawImageInGrid, drawImageInGridWithSrc } from "../painters/drawImageInGrid";
+import { drawImageInGrid, drawImageInGridWithSrc, drawImageOnPx } from "../painters/drawImageInGrid";
 import { GameEngine } from "./GameEngine";
 import { moveByDirection } from "../utils/movePointByDirection";
 import { getRandomFreePosition } from "../shapeCalculators/getRandomFreePosition";
@@ -14,6 +14,7 @@ import { Directions } from "../types/Directions";
 import { getGridCenterInPx } from "../utils/getGridCenterInPx";
 import { gridCenterToPx, gridToPx } from "../utils/gridToPx";
 import { GAME_RESOLUTION } from "../painters/drawGameGrid";
+import { arePointsTheSame } from "../utils/arePointsTheSame";
 
 export type ShipTypes = 1|2|3|4;
 
@@ -32,13 +33,19 @@ const SHIP_MAP = {
     4: Ship4,
 }
 
+const SHIP_SPEED = 100;
 export class Ship extends Entity {
     public position: Coordinates;
+    private destinationPosition: Coordinates|null = null;
+
     public shipType: ShipTypes = 1;
     private nextMove: Directions|null = null;
     private previousMove: Directions = 'bottom';
     private moveTick: number = 0;
     private shipImage: HTMLImageElement;
+    private isShipMoving: boolean = false;
+
+    private shipSpeed: number;
 
     constructor(game: GameEngine, shipType: ShipTypes = 1) {
         super(game);
@@ -46,6 +53,9 @@ export class Ship extends Entity {
         this.shipType = shipType;
         this.shipImage = new Image();
         this.shipImage.src = SHIP_MAP[shipType];
+
+
+        this.shipSpeed = GAME_RESOLUTION.getGridWidth(game.ctx) / SHIP_SPEED;
     }
 
     draw() {
@@ -77,17 +87,37 @@ export class Ship extends Entity {
     update() {
         this.game.debug.playerPosition = this.position;
         const pressedButton: string|undefined = Object.entries(this.game.controls.player).find(([key, isPressed]) => isPressed)?.[0]
-        if (pressedButton) {
+        if (pressedButton && !this.isShipMoving) {
             this.nextMove = ControlsToMove[pressedButton];
             this.previousMove = this.nextMove;
             this.moveTick = this.game.ticks;
         }
 
         if (this.game.ticks === this.moveTick + 1 && this.nextMove) {
-            this.position = moveByDirection(this.position, this.nextMove, getIslandPositions(this.game.layers))
-
+            this.destinationPosition = moveByDirection(this.position, this.nextMove, getIslandPositions(this.game.layers))
             this.nextMove = null;
         }
+
+        if (this.destinationPosition && arePointsTheSame(this.position, this.destinationPosition)) {
+            this.destinationPosition = null;
+            this.isShipMoving = false;
+        }
+
+        if (this.destinationPosition) {
+            this.isShipMoving = true;
+
+            const horizontalMove = this.destinationPosition.x - this.position.x;
+            const verticalMove = this.destinationPosition.y - this.position.y;
+
+            this.position = {
+                x: this.position.x + horizontalMove * GAME_RESOLUTION.getGridWidth(this.game.ctx) / SHIP_SPEED,
+                y: this.position.y + verticalMove * GAME_RESOLUTION.getGridHeight(this.game.ctx) / SHIP_SPEED,
+            }
+
+        }
+
+        this.game.debug.isShipMoving = this.isShipMoving;
+        this.game.debug.destinationPosition = this.destinationPosition;
     }
 
 
