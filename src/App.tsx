@@ -40,11 +40,11 @@ function App() {
 
         const game = new GameEngine(ctx, layers);
 
-
-        game.addEntity(new Ship(game, 1))
-        game.addEntity(new Island(game))
         game.addEntity(new Background(game))
         game.addEntity(new Grid(game))
+        game.addEntity(new Ship(game, 1))
+        game.addEntity(new Island(game))
+
 
         game.init();
 

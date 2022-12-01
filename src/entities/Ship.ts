@@ -9,9 +9,18 @@ import { drawImageInGrid } from "../painters/drawImageInGrid";
 import { GameEngine } from "./GameEngine";
 import { moveByDirection } from "../utils/movePointByDirection";
 import { getRandomFreePosition } from "../shapeCalculators/getRandomFreePosition";
+import { drawCircle } from "../painters/drawCircle";
+import { Directions } from "../types/Directions";
 
 export type ShipTypes = 1|2|3|4;
 
+
+const ControlsToMove: Record<string, Directions> = {
+    up: 'top',
+    left: 'left',
+    down: 'bottom',
+    right: 'right'
+}
 
 const SHIP_MAP = {
     1: Ship1,
@@ -23,6 +32,8 @@ const SHIP_MAP = {
 export class Ship extends Entity {
     public position: Coordinates;
     public shipType: ShipTypes = 1;
+    private nextMove: Directions|null = null;
+    private moveTick: number = 0;
 
     constructor(game: GameEngine, shipType: ShipTypes = 1) {
         super(game);
@@ -31,12 +42,20 @@ export class Ship extends Entity {
     }
 
     draw() {
-        drawImageInGrid(this.game.ctx, SHIP_MAP[this.shipType], this.position);
+        drawCircle(this.game.ctx, this.position)
+        // drawImageInGrid(this.game.ctx, SHIP_MAP[this.shipType], this.position);
     }
 
     update() {
-        if (this.game.controls.player.up) {
-            this.position = moveByDirection(this.position, 'top');
+        const pressedButton: string|undefined = Object.entries(this.game.controls.player).find(([key, isPressed]) => isPressed)?.[0]
+        if (pressedButton) {
+            this.nextMove = ControlsToMove[pressedButton];
+            this.moveTick = this.game.ticks;
+        }
+
+        if (this.game.ticks === this.moveTick + 10 && this.nextMove) {
+            this.position = moveByDirection(this.position, this.nextMove)
+            this.nextMove = null;
         }
     }
 

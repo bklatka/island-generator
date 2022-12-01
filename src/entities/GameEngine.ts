@@ -47,11 +47,12 @@ export class GameEngine {
     }
 
     private listenForInputs() {
-        this.ctx.canvas.addEventListener('keydown', this.onKeyDown)
-        this.ctx.canvas.addEventListener('keyup', this.onKeyUp)
+        document.addEventListener('keydown', this.onKeyDown.bind(this), false)
+        document.addEventListener('keyup', this.onKeyUp.bind(this), false)
     }
 
     private onKeyDown(ev: KeyboardEvent) {
+        console.log('keydown', ev.code)
         switch (ev.code) {
             case "ArrowLeft":
             case "KeyA":
