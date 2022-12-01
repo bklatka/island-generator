@@ -15,6 +15,7 @@ import { getGridCenterInPx } from "../utils/getGridCenterInPx";
 import { gridCenterToPx, gridToPx } from "../utils/gridToPx";
 import { GAME_RESOLUTION } from "../painters/drawGameGrid";
 import { arePointsTheSame } from "../utils/arePointsTheSame";
+import { GAME_CONFIG } from "../constants/GameConfig";
 
 export type ShipTypes = 1|2|3|4;
 
@@ -33,8 +34,9 @@ const SHIP_MAP = {
     4: Ship4,
 }
 
-const SHIP_SPEED = 100;
+const SHIP_SPEED_DIVIDER = 300;
 export class Ship extends Entity {
+    public id: string;
     public position: Coordinates;
     private destinationPosition: Coordinates|null = null;
 
@@ -45,17 +47,15 @@ export class Ship extends Entity {
     private shipImage: HTMLImageElement;
     private isShipMoving: boolean = false;
 
-    private shipSpeed: number;
+    private shipSpeed: number = GAME_CONFIG.DEFAULT_SHIP_SPEED;
 
-    constructor(game: GameEngine, shipType: ShipTypes = 1) {
+    constructor(game: GameEngine, id: string, shipType: ShipTypes = 1) {
         super(game);
         this.position = getRandomFreePosition(getIslandPositions(game.layers));
         this.shipType = shipType;
         this.shipImage = new Image();
         this.shipImage.src = SHIP_MAP[shipType];
-
-
-        this.shipSpeed = GAME_RESOLUTION.getGridWidth(game.ctx) / SHIP_SPEED;
+        this.id = id;
     }
 
     draw() {
@@ -93,7 +93,7 @@ export class Ship extends Entity {
             this.moveTick = this.game.ticks;
         }
 
-        if (this.game.ticks === this.moveTick + 1 && this.nextMove) {
+        if (this.nextMove) {
             this.destinationPosition = moveByDirection(this.position, this.nextMove, getIslandPositions(this.game.layers))
             this.nextMove = null;
         }
@@ -101,6 +101,11 @@ export class Ship extends Entity {
         if (this.destinationPosition && arePointsTheSame(this.position, this.destinationPosition)) {
             this.destinationPosition = null;
             this.isShipMoving = false;
+            // cleanup after animation movement
+            this.position = {
+                x: Math.round(this.position.x),
+                y: Math.round(this.position.y),
+            }
         }
 
         if (this.destinationPosition) {
@@ -110,8 +115,8 @@ export class Ship extends Entity {
             const verticalMove = this.destinationPosition.y - this.position.y;
 
             this.position = {
-                x: this.position.x + horizontalMove * GAME_RESOLUTION.getGridWidth(this.game.ctx) / SHIP_SPEED,
-                y: this.position.y + verticalMove * GAME_RESOLUTION.getGridHeight(this.game.ctx) / SHIP_SPEED,
+                x: this.position.x + horizontalMove * GAME_RESOLUTION.getGridWidth(this.game.ctx) / SHIP_SPEED_DIVIDER * this.shipSpeed,
+                y: this.position.y + verticalMove * GAME_RESOLUTION.getGridHeight(this.game.ctx) / SHIP_SPEED_DIVIDER * this.shipSpeed,
             }
 
         }

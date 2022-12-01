@@ -44,7 +44,8 @@ function App() {
         game.addEntity(new Grid(game))
         game.addEntity(new Island(game))
         game.addEntity(new Island(game))
-        game.addEntity(new Ship(game, 1))
+        game.addEntity(new Ship(game, 'player1', 1))
+        game.addEntity(new Ship(game, 'player2', 2))
 
 
         game.init();
