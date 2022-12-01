@@ -20,6 +20,13 @@ export function gridToPx(ctx: CanvasRenderingContext2D, coord: Coordinates): [nu
     return [xPos, yPos];
 }
 
+export function gridCenterToPx(ctx: CanvasRenderingContext2D, coord: Coordinates): [number, number] {
+    const xPos = getXStep(ctx) * coord.x;
+    const yPos = getYStep(ctx) * coord.y;
+
+    return [xPos + getXStep(ctx) / 2, yPos + getYStep(ctx) / 2];
+}
+
 export function pxToGrid(ctx: CanvasRenderingContext2D, x: number, y: number): Coordinates {
     const xPos = Math.floor(x / getXStep(ctx));
     const yPos = Math.floor(y/ getYStep(ctx));

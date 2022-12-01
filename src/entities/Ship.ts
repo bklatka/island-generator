@@ -12,6 +12,8 @@ import { getRandomFreePosition } from "../shapeCalculators/getRandomFreePosition
 import { drawCircle } from "../painters/drawCircle";
 import { Directions } from "../types/Directions";
 import { getGridCenterInPx } from "../utils/getGridCenterInPx";
+import { gridCenterToPx, gridToPx } from "../utils/gridToPx";
+import { GAME_RESOLUTION } from "../painters/drawGameGrid";
 
 export type ShipTypes = 1|2|3|4;
 
@@ -46,7 +48,16 @@ export class Ship extends Entity {
     }
 
     draw() {
-        drawImageInGrid(this.game.ctx, this.shipImage, this.position);
+        const { ctx } = this.game;
+        ctx.save();
+
+        const rotateOrigin = gridCenterToPx(ctx, this.position);
+        ctx.translate(...rotateOrigin)
+        ctx.rotate(90 * Math.PI / 180);
+
+        drawImageInGrid(this.game.ctx, this.shipImage, { x: -0.5, y: -0.5 });
+
+        ctx.restore();
     }
 
     update() {
