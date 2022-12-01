@@ -14,11 +14,11 @@ export function drawImageInGridWithSrc(ctx: CanvasRenderingContext2D, image: str
     img.src = image;
 }
 
-export function drawImageInGrid(ctx: CanvasRenderingContext2D, image: HTMLImageElement, coord: Coordinates) {
+export function drawImageInGrid(ctx: CanvasRenderingContext2D, image: HTMLImageElement, coord: Coordinates, scale: number = 1) {
     const [posX, posY] = gridToPx(ctx, coord);
     const { getGridWidth, getGridHeight } = GAME_RESOLUTION
 
-    ctx.drawImage(image, posX, posY, getGridWidth(ctx), getGridHeight(ctx));
+    ctx.drawImage(image, posX, posY, getGridWidth(ctx) * scale, getGridHeight(ctx) * scale);
 }
 
 export function drawImageOnPx(ctx: CanvasRenderingContext2D, image: HTMLImageElement, x: number, y: number) {

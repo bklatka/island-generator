@@ -5,4 +5,6 @@ export interface UserControls {
     down: boolean;
     left: boolean;
     right: boolean;
+    shootLeft: boolean;
+    shootRight: boolean;
 }

@@ -15,6 +15,7 @@ import { GAME_RESOLUTION } from "../painters/drawGameGrid";
 import { arePointsTheSame } from "../utils/arePointsTheSame";
 import { GAME_CONFIG } from "../constants/GameConfig";
 import { UserControls } from "../types/UserControls";
+import { Canonball } from "./Canonball";
 
 export type ShipTypes = 1|2|3|4;
 
@@ -40,6 +41,7 @@ export class Ship extends Entity {
     public direction: Directions = 'bottom';
     private destinationPosition: Coordinates|null = null;
 
+
     public shipType: ShipTypes = 1;
     private shipImage: HTMLImageElement;
     private isShipMoving: boolean = false;
@@ -47,6 +49,8 @@ export class Ship extends Entity {
     private shipSpeed: number = GAME_CONFIG.DEFAULT_SHIP_SPEED;
 
     private controls: UserControls;
+
+    private hasShootBall: boolean = false;
 
     constructor(game: GameEngine, id: string, controls: UserControls, shipType: ShipTypes = 1) {
         super(game);
@@ -85,6 +89,7 @@ export class Ship extends Entity {
     }
 
     update() {
+        this.game.debug.direction = this.direction;
         this.handleUserInput();
         this.stopAnimatingShipOnDestination();
         this.animateShipToDestination();
@@ -95,11 +100,52 @@ export class Ship extends Entity {
     }
 
     private handleUserInput() {
-        const pressedButton: string|undefined = Object.entries(this.controls).find(([key, isPressed]) => isPressed)?.[0]
-        if (pressedButton && !this.isShipMoving) {
-            this.direction = ControlsToMove[pressedButton];
-            this.destinationPosition = moveByDirection(this.position, this.direction, getIslandPositions(this.game.layers))
+        this.handleUserMovement();
+        this.handleUserShoot();
+    }
 
+    private handleUserShoot() {
+        if (this.controls.shootLeft && !this.isShipMoving && !this.hasShootBall) {
+            const shipDirectionToBallDirection: Record<Directions, Directions> = {
+                top: 'left',
+                left: 'bottom',
+                right: 'top',
+                bottom: 'right',
+            }
+
+            const ballDirection = shipDirectionToBallDirection[this.direction];
+            this.shootBall(ballDirection)
+        }
+
+        if (this.controls.shootRight && !this.isShipMoving && !this.hasShootBall) {
+            const shipDirectionToBallDirection: Record<Directions, Directions> = {
+                top: 'right',
+                left: 'top',
+                right: 'bottom',
+                bottom: 'left',
+            }
+
+            const ballDirection = shipDirectionToBallDirection[this.direction];
+            this.shootBall(ballDirection)
+        }
+
+    }
+
+    private shootBall(destination: Directions) {
+        this.game.addEntity(new Canonball(this.game, 'ball', this.position, destination, 1, 4))
+        this.hasShootBall = true;
+
+        // cooldown
+        setTimeout(() => {
+            this.hasShootBall = false;
+        }, 300);
+    }
+
+    private handleUserMovement() {
+        const pressedMoveButton: string|undefined = Object.entries(this.controls).filter(([key]) => ['up', 'down', 'left', 'right'].includes(key)).find(([key, isPressed]) => isPressed)?.[0]
+        if (pressedMoveButton && !this.isShipMoving) {
+            this.direction = ControlsToMove[pressedMoveButton] ?? this.direction;
+            this.destinationPosition = moveByDirection(this.position, this.direction, getIslandPositions(this.game.layers))
         }
     }
 

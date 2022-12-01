@@ -24,12 +24,16 @@ export class GameEngine {
             down: false,
             right: false,
             up: false,
+            shootLeft: false,
+            shootRight: false,
         },
         player2: {
             left: false,
             down: false,
             right: false,
             up: false,
+            shootLeft: false,
+            shootRight: false,
         }
     };
 
@@ -65,61 +69,76 @@ export class GameEngine {
     }
 
     private onKeyDown(ev: KeyboardEvent) {
+        const { player1, player2 } = this.controls;
         switch (ev.code) {
             case "ArrowLeft":
-                this.controls.player1.left = true;
+                player1.left = true;
                 break;
             case "KeyA":
-                this.controls.player2.left = true;
+                player2.left = true;
                 break;
             case "ArrowRight":
-                this.controls.player1.right = true;
+                player1.right = true;
                 break;
             case "KeyD":
-                this.controls.player2.right = true;
+                player2.right = true;
                 break;
             case "ArrowUp":
-                this.controls.player1.up = true;
+                player1.up = true;
                 break;
             case "KeyW":
-                this.controls.player2.up = true;
+                player2.up = true;
                 break;
             case "ArrowDown":
-                this.controls.player1.down = true;
+                player1.down = true;
                 break;
             case "KeyS":
-                this.controls.player2.down = true;
+                player2.down = true;
+                break;
+            case "Slash":
+                player1.shootRight = true;
+                break;
+            case "Period":
+                player1.shootLeft = true;
                 break;
         }
+        this.debug.pressedKey = ev.code;
         this.debug.player1Controls = this.controls.player1;
         this.debug.player2Controls = this.controls.player2;
     }
 
     private onKeyUp(ev: KeyboardEvent) {
+        const { player1, player2 } = this.controls;
         switch (ev.code) {
             case "ArrowLeft":
-                this.controls.player1.left = false;
+                player1.left = false;
                 break;
             case "KeyA":
-                this.controls.player2.left = false;
+                player2.left = false;
                 break;
             case "ArrowRight":
-                this.controls.player1.right = false;
+                player1.right = false;
                 break;
             case "KeyD":
-                this.controls.player2.right = false;
+                player2.right = false;
                 break;
             case "ArrowUp":
-                this.controls.player1.up = false;
+                player1.up = false;
                 break;
             case "KeyW":
-                this.controls.player2.up = false;
+                player2.up = false;
                 break;
             case "ArrowDown":
-                this.controls.player1.down = false;
+                player1.down = false;
                 break;
             case "KeyS":
-                this.controls.player2.down = false;
+                player2.down = false;
+                break;
+            case "Slash":
+                player1.shootRight = false;
+                break;
+            case "Period":
+                player1.shootLeft = false;
                 break;
         }
     }
@@ -127,6 +146,8 @@ export class GameEngine {
     private update() {
         this.ticks++;
         this.debug.ticks = this.ticks;
+
+        this.entities = this.entities.filter(entity => !entity.isDisposed);
 
         this.entities.forEach(entity => {
             entity.update();
