@@ -58,6 +58,8 @@ function App() {
 
   return (
     <div className="App">
+        <p>Player 1: Arrow keys to move, "." and "/" to shoot </p>
+        <p>Player 2: WASD to move, "e" and "q" to shoot</p>
       <canvas ref={gameRef} width={800} height={600} id={'main'} />
     </div>
   );
