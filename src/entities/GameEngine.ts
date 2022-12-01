@@ -2,15 +2,12 @@ import { Layers } from "../types/Layers";
 import { Entity } from "./Entity";
 import { GAME_CONFIG } from "../constants/GameConfig";
 import { gridToPx, pxToGrid } from "../utils/gridToPx";
+import { UserControls } from "../types/UserControls";
 
 
 export interface GameControls {
-    player: {
-        left: boolean;
-        right: boolean;
-        up: boolean;
-        down: boolean;
-    }
+    player1: UserControls;
+    player2: UserControls;
 }
 
 export class GameEngine {
@@ -22,7 +19,13 @@ export class GameEngine {
         debug: 'on'
     };
     public controls: GameControls = {
-        player: {
+        player1: {
+            left: false,
+            down: false,
+            right: false,
+            up: false,
+        },
+        player2: {
             left: false,
             down: false,
             right: false,
@@ -64,42 +67,59 @@ export class GameEngine {
     private onKeyDown(ev: KeyboardEvent) {
         switch (ev.code) {
             case "ArrowLeft":
+                this.controls.player1.left = true;
+                break;
             case "KeyA":
-                this.controls.player.left = true;
+                this.controls.player2.left = true;
                 break;
             case "ArrowRight":
+                this.controls.player1.right = true;
+                break;
             case "KeyD":
-                this.controls.player.right = true;
+                this.controls.player2.right = true;
                 break;
             case "ArrowUp":
+                this.controls.player1.up = true;
+                break;
             case "KeyW":
-                this.controls.player.up = true;
+                this.controls.player2.up = true;
                 break;
             case "ArrowDown":
+                this.controls.player1.down = true;
+                break;
             case "KeyS":
-                this.controls.player.down = true;
+                this.controls.player2.down = true;
                 break;
         }
-        this.debug.playerControls = this.controls.player;
+        this.debug.player1Controls = this.controls.player1;
+        this.debug.player2Controls = this.controls.player2;
     }
 
     private onKeyUp(ev: KeyboardEvent) {
         switch (ev.code) {
             case "ArrowLeft":
+                this.controls.player1.left = false;
+                break;
             case "KeyA":
-                this.controls.player.left = false;
+                this.controls.player2.left = false;
                 break;
             case "ArrowRight":
+                this.controls.player1.right = false;
+                break;
             case "KeyD":
-                this.controls.player.right = false;
+                this.controls.player2.right = false;
                 break;
             case "ArrowUp":
+                this.controls.player1.up = false;
+                break;
             case "KeyW":
-                this.controls.player.up = false;
+                this.controls.player2.up = false;
                 break;
             case "ArrowDown":
+                this.controls.player1.down = false;
+                break;
             case "KeyS":
-                this.controls.player.down = false;
+                this.controls.player2.down = false;
                 break;
         }
     }

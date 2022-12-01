@@ -5,17 +5,16 @@ import Ship1 from '../assets/ships/ship1.png';
 import Ship2 from '../assets/ships/ship2.png';
 import Ship3 from '../assets/ships/ship3.png';
 import Ship4 from '../assets/ships/ship4.png';
-import { drawImageInGrid, drawImageInGridWithSrc, drawImageOnPx } from "../painters/drawImageInGrid";
+import { drawImageInGrid } from "../painters/drawImageInGrid";
 import { GameEngine } from "./GameEngine";
 import { moveByDirection } from "../utils/movePointByDirection";
 import { getRandomFreePosition } from "../shapeCalculators/getRandomFreePosition";
-import { drawCircle } from "../painters/drawCircle";
 import { Directions } from "../types/Directions";
-import { getGridCenterInPx } from "../utils/getGridCenterInPx";
-import { gridCenterToPx, gridToPx } from "../utils/gridToPx";
+import { gridCenterToPx } from "../utils/gridToPx";
 import { GAME_RESOLUTION } from "../painters/drawGameGrid";
 import { arePointsTheSame } from "../utils/arePointsTheSame";
 import { GAME_CONFIG } from "../constants/GameConfig";
+import { UserControls } from "../types/UserControls";
 
 export type ShipTypes = 1|2|3|4;
 
@@ -47,13 +46,16 @@ export class Ship extends Entity {
 
     private shipSpeed: number = GAME_CONFIG.DEFAULT_SHIP_SPEED;
 
-    constructor(game: GameEngine, id: string, shipType: ShipTypes = 1) {
+    private controls: UserControls;
+
+    constructor(game: GameEngine, id: string, controls: UserControls, shipType: ShipTypes = 1) {
         super(game);
         this.position = getRandomFreePosition(getIslandPositions(game.layers));
         this.shipType = shipType;
         this.shipImage = new Image();
         this.shipImage.src = SHIP_MAP[shipType];
         this.id = id;
+        this.controls = controls;
     }
 
     draw() {
@@ -93,7 +95,7 @@ export class Ship extends Entity {
     }
 
     private handleUserInput() {
-        const pressedButton: string|undefined = Object.entries(this.game.controls.player).find(([key, isPressed]) => isPressed)?.[0]
+        const pressedButton: string|undefined = Object.entries(this.controls).find(([key, isPressed]) => isPressed)?.[0]
         if (pressedButton && !this.isShipMoving) {
             this.direction = ControlsToMove[pressedButton];
             this.destinationPosition = moveByDirection(this.position, this.direction, getIslandPositions(this.game.layers))
