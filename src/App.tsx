@@ -2,15 +2,13 @@ import React, { useEffect, useRef } from 'react';
 import './App.css';
 import { drawBackground } from "./painters/drawBackground";
 import { drawGameGrid } from "./painters/drawGameGrid";
-import { generateRandomIsland } from "./painters/generateRandomIsland";
-import { drawIsland } from "./painters/drawIsland";
-import { times } from "lodash-es";
 import { GAME_CONFIG } from "./constants/GameConfig";
 import { Layers } from "./types/Layers";
-import { getRandomFreePosition } from "./utils/getRandomFreePosition";
-import { getIslandPositions } from "./utils/getIslandPositions";
-import { drawImageInGrid } from "./painters/drawImageInGrid";
-import Ship from './assets/ships/ship1.png'
+import { Ship } from "./entities/Ship";
+import { GameEngine } from "./entities/GameEngine";
+import { Island } from "./entities/Island";
+import { Background } from "./entities/Background";
+import { Grid } from "./entities/Grid";
 
 function App() {
 
@@ -39,18 +37,17 @@ function App() {
             drawGameGrid(ctx);
         }
 
-        times(GAME_CONFIG.ISLAND_COUNT, () => {
-            addRandomIsland(layers);
-        })
 
-        const shipStartPoint = getRandomFreePosition(getIslandPositions(layers))
-
-        drawImageInGrid(ctx, Ship, shipStartPoint);
+        const game = new GameEngine(ctx, layers);
 
 
-        layers.islands.forEach(island => {
-            drawIsland(ctx, island, 10);
-        })
+        game.addEntity(new Ship(game, 1))
+        game.addEntity(new Island(game))
+        game.addEntity(new Background(game))
+        game.addEntity(new Grid(game))
+
+        game.init();
+
 
 
     }, [hasLoaded])
@@ -66,9 +63,3 @@ function App() {
 
 export default App;
 
-
-function addRandomIsland(layers: Layers) {
-    layers.islands.push(
-        generateRandomIsland(layers.islands.flatMap(part => part).map(part => part.coord))
-    );
-}

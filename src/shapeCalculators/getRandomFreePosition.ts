@@ -1,7 +1,7 @@
 import { Coordinates } from "../types/Coordinates";
 import { GAME_RESOLUTION } from "../painters/drawGameGrid";
-import { getRandomInRange } from "./getRandomInRange";
-import { isPointInShape } from "./isPointInShape";
+import { getRandomInRange } from "../utils/getRandomInRange";
+import { isPointInShape } from "../utils/isPointInShape";
 
 
 const DEFAULT_START_PADDING = 2;

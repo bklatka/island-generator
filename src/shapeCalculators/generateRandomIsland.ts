@@ -1,6 +1,5 @@
 import { getRandomInRange } from "../utils/getRandomInRange";
 import { Coordinates } from "../types/Coordinates";
-import { TileMap } from "./drawIslandPart";
 import { IslandTiles } from "../types/IslandTiles";
 import { closeOpenShape } from "../shapeCalculators/closeOpenShape";
 import { generateRandomPath } from "../shapeCalculators/generateRandomPath";
@@ -8,7 +7,8 @@ import { fillMissingGapsInShape } from "../shapeCalculators/fillInnerShape";
 import { getIslandTileForPoint } from "../utils/getIslandTileForPoint";
 import { DrawnParts } from "../types/DrawBlock";
 import { CENTER_TILES } from "../constants/BlockGroups";
-import { getRandomFreePosition } from "../utils/getRandomFreePosition";
+import { getRandomFreePosition } from "./getRandomFreePosition";
+import { TileMap } from "../painters/drawIslandPart";
 
 
 const ISLAND_LENGTH = 30;
