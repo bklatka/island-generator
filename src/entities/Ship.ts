@@ -38,12 +38,10 @@ const SHIP_SPEED_DIVIDER = 300;
 export class Ship extends Entity {
     public id: string;
     public position: Coordinates;
+    public direction: Directions = 'bottom';
     private destinationPosition: Coordinates|null = null;
 
     public shipType: ShipTypes = 1;
-    private nextMove: Directions|null = null;
-    private previousMove: Directions = 'bottom';
-    private moveTick: number = 0;
     private shipImage: HTMLImageElement;
     private isShipMoving: boolean = false;
 
@@ -59,7 +57,7 @@ export class Ship extends Entity {
     }
 
     draw() {
-        this.rotateShip(this.previousMove, (shipCords) => {
+        this.rotateShip(this.direction, (shipCords) => {
             drawImageInGrid(this.game.ctx, this.shipImage, shipCords);
         })
     }
@@ -85,19 +83,25 @@ export class Ship extends Entity {
     }
 
     update() {
+        this.handleUserInput();
+        this.stopAnimatingShipOnDestination();
+        this.animateShipToDestination();
+
         this.game.debug.playerPosition = this.position;
+        this.game.debug.isShipMoving = this.isShipMoving;
+        this.game.debug.destinationPosition = this.destinationPosition;
+    }
+
+    private handleUserInput() {
         const pressedButton: string|undefined = Object.entries(this.game.controls.player).find(([key, isPressed]) => isPressed)?.[0]
         if (pressedButton && !this.isShipMoving) {
-            this.nextMove = ControlsToMove[pressedButton];
-            this.previousMove = this.nextMove;
-            this.moveTick = this.game.ticks;
-        }
+            this.direction = ControlsToMove[pressedButton];
+            this.destinationPosition = moveByDirection(this.position, this.direction, getIslandPositions(this.game.layers))
 
-        if (this.nextMove) {
-            this.destinationPosition = moveByDirection(this.position, this.nextMove, getIslandPositions(this.game.layers))
-            this.nextMove = null;
         }
+    }
 
+    private stopAnimatingShipOnDestination() {
         if (this.destinationPosition && arePointsTheSame(this.position, this.destinationPosition)) {
             this.destinationPosition = null;
             this.isShipMoving = false;
@@ -107,7 +111,9 @@ export class Ship extends Entity {
                 y: Math.round(this.position.y),
             }
         }
+    }
 
+    private animateShipToDestination() {
         if (this.destinationPosition) {
             this.isShipMoving = true;
 
@@ -120,9 +126,6 @@ export class Ship extends Entity {
             }
 
         }
-
-        this.game.debug.isShipMoving = this.isShipMoving;
-        this.game.debug.destinationPosition = this.destinationPosition;
     }
 
 
