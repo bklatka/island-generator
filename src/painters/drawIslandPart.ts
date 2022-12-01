@@ -22,10 +22,7 @@ import InnerTopLeft from '../assets/tiles/innerTopLeft.png';
 import InnerTopRight from '../assets/tiles/innerTopRight.png';
 
 
-import { drawImageInGrid } from "./drawImageInGrid";
-import { times } from "lodash-es";
-import { getRandomInRange } from "../utils/getRandomInRange";
-import { Directions } from "../types/Directions";
+import { drawImageInGrid, drawImageInGridWithSrc } from "./drawImageInGrid";
 import { IslandTiles } from "../types/IslandTiles";
 
 
@@ -53,39 +50,6 @@ export const TileMap: Record<IslandTiles, string> = {
 }
 
 
-const IslandParts: Record<Directions | 'center', IslandTiles[]> = {
-    top: ['top1', 'top2'],
-    left: ['left1', 'left2'],
-    bottom: ['bottom1', "bottom2"],
-    right: ['right1', 'right2'],
-    center: ['center1', 'center2', 'center3', 'center4'],
-}
-
-export function drawIslandPart(ctx: CanvasRenderingContext2D, tileType: IslandTiles, coord: Coordinates) {
-    const tileToDraw = TileMap[tileType];
-    drawImageInGrid(ctx, tileToDraw, coord);
-}
-
-export function drawIslandCenter(ctx: CanvasRenderingContext2D, coord: Coordinates, width: number, height: number) {
-    const parts = IslandParts.center;
-
-    for (let x = 0; x < width; x++) {
-        for (let y = 0; y < height; y++) {
-            const partChosen = parts[getRandomInRange(0, parts.length)];
-            drawIslandPart(ctx, partChosen, { x: coord.x + x, y: coord.y + y });
-        }
-    }
-}
-
-export function drawIslandEdge(ctx: CanvasRenderingContext2D, coord: Coordinates, type: Directions, length: number) {
-    const parts = IslandParts[type];
-
-    times(length, (idx) => {
-        const newPosition = ['left', 'right'].includes(type)
-            ? { x: coord.x, y: coord.y + idx }
-            : { x: coord.x + idx, y: coord.y };
-        const partChosen = parts[getRandomInRange(0, parts.length)];
-
-        drawIslandPart(ctx, partChosen, newPosition);
-    })
+export function drawIslandPart(ctx: CanvasRenderingContext2D, tileImage: HTMLImageElement, coord: Coordinates) {
+    drawImageInGrid(ctx, tileImage, coord)
 }

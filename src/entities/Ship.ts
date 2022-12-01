@@ -5,7 +5,7 @@ import Ship1 from '../assets/ships/ship1.png';
 import Ship2 from '../assets/ships/ship2.png';
 import Ship3 from '../assets/ships/ship3.png';
 import Ship4 from '../assets/ships/ship4.png';
-import { drawImageInGrid } from "../painters/drawImageInGrid";
+import { drawImageInGrid, drawImageInGridWithSrc } from "../painters/drawImageInGrid";
 import { GameEngine } from "./GameEngine";
 import { moveByDirection } from "../utils/movePointByDirection";
 import { getRandomFreePosition } from "../shapeCalculators/getRandomFreePosition";
@@ -34,16 +34,18 @@ export class Ship extends Entity {
     public shipType: ShipTypes = 1;
     private nextMove: Directions|null = null;
     private moveTick: number = 0;
+    private shipImage: HTMLImageElement;
 
     constructor(game: GameEngine, shipType: ShipTypes = 1) {
         super(game);
         this.position = getRandomFreePosition(getIslandPositions(game.layers));
         this.shipType = shipType;
+        this.shipImage = new Image();
+        this.shipImage.src = SHIP_MAP[shipType];
     }
 
     draw() {
-        drawCircle(this.game.ctx, this.position)
-        // drawImageInGrid(this.game.ctx, SHIP_MAP[this.shipType], this.position);
+        drawImageInGrid(this.game.ctx, this.shipImage, this.position);
     }
 
     update() {
@@ -53,8 +55,8 @@ export class Ship extends Entity {
             this.moveTick = this.game.ticks;
         }
 
-        if (this.game.ticks === this.moveTick + 10 && this.nextMove) {
-            this.position = moveByDirection(this.position, this.nextMove)
+        if (this.game.ticks === this.moveTick + 1 && this.nextMove) {
+            this.position = moveByDirection(this.position, this.nextMove, getIslandPositions(this.game.layers))
             this.nextMove = null;
         }
     }
