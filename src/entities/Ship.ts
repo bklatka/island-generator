@@ -37,24 +37,25 @@ const SHIP_MAP = {
     4: Ship4,
 }
 
-const SHIP_SPEED_DIVIDER = 300;
+const DEFAULT_HEALTH = 100;
 export class Ship extends Entity {
+    // Base props
     public id: string;
     public position: Coordinates;
     public direction: Directions = 'bottom';
 
-
-
+    // Game props
+    private health: number = DEFAULT_HEALTH;
+    private maxHealth: number = DEFAULT_HEALTH;
     public shipType: ShipTypes = 1;
+    private shipSpeed: number = GAME_CONFIG.DEFAULT_SHIP_SPEED;
+    private shipCanonDistance: number = GAME_CONFIG.DEFAULT_SHIP_CANON_DISTANCE;
 
 
     private destinationPosition: Coordinates|null = null;
     private isShipMoving: boolean = false;
 
     private shipImage: HTMLImageElement;
-
-    private shipSpeed: number = GAME_CONFIG.DEFAULT_SHIP_SPEED;
-    private shipCanonDistance: number = GAME_CONFIG.DEFAULT_SHIP_CANON_DISTANCE;
 
     private controls: UserControls;
 
@@ -74,36 +75,61 @@ export class Ship extends Entity {
     }
 
     draw() {
-
-
         rotateElementInGrid(this.game.ctx, this.direction, this.position, (shipCords) => {
             drawImageInGrid(this.game.ctx, this.shipImage, shipCords);
         })
 
         if (this.hasShootBall) {
-            const { ctx, ticks } = this.game;
-            const cooldownEnd = this.cooldownStart + this.cooldownTime
-            const percentDone = (this.cooldownStart - ticks) / (this.cooldownStart - cooldownEnd);
-
-            const maxCooldownWidth = GAME_RESOLUTION.getGridWidth(ctx);
-
-            const [xPos, yPos] = gridToPx(ctx, this.position)
-
-            ctx.fillStyle = '#c7a100'
-            ctx.rect(xPos, yPos, maxCooldownWidth * percentDone, 5);
-            ctx.fill()
+            this.drawCooldownBar();
         }
+
+        this.drawHealthBar();
     }
 
     update() {
+        this.handleShipDead();
         this.handleUserInput();
         this.stopAnimatingShipOnDestination();
         this.animateShipToDestination();
         this.countCannonCooldown();
+    }
 
+    public takeDamage(canonBall: Canonball) {
+        this.health = this.health - canonBall.power;
+    }
+
+    private drawCooldownBar() {
+        const { ctx, ticks } = this.game;
+        const cooldownEnd = this.cooldownStart + this.cooldownTime
+        const percentDone = (this.cooldownStart - ticks) / (this.cooldownStart - cooldownEnd);
+
+        const maxCooldownWidth = GAME_RESOLUTION.getGridWidth(ctx);
+
+        const [xPos, yPos] = gridToPx(ctx, this.position)
+
+        ctx.fillStyle = '#e5bb00'
+        ctx.rect(xPos, yPos, maxCooldownWidth * percentDone, 5);
+        ctx.fill();
+    }
+
+    private drawHealthBar() {
+        const { ctx } = this.game;
+
+        const [xPos, yPos] = gridToPx(ctx, this.position);
+        const gridHeight = GAME_RESOLUTION.getGridHeight(ctx);
+        const gridWidth = GAME_RESOLUTION.getGridWidth(ctx);
+
+        const percentHealth = this.health/this.maxHealth;
+
+        ctx.fillStyle = '#1fff24'
+        ctx.rect(xPos, yPos + gridHeight - 5, gridWidth * percentHealth, 5);
+        ctx.fill();
     }
 
     private handleUserInput() {
+        if (this.isDisposed) {
+            return;
+        }
         this.handleUserMovement();
         this.handleUserShoot();
     }
@@ -140,8 +166,8 @@ export class Ship extends Entity {
         }
     }
 
-    private shootBall(destination: Directions) {
-        this.game.addEntity(new Canonball(this.game, 'ball', this.position, destination, 1, this.shipCanonDistance))
+    private shootBall(direction: Directions) {
+        this.game.addCanonball(new Canonball(this.game, 'ball', moveByDirection(this.position, direction), direction, 20, this.shipCanonDistance))
         this.hasShootBall = true;
 
         this.cooldownStart = this.game.ticks;
@@ -170,6 +196,13 @@ export class Ship extends Entity {
             this.position = animateElementToDestination(this.game.ctx, this.position, this.destinationPosition, this.shipSpeed);
             this.isShipMoving = true;
         }
+    }
+
+    private handleShipDead() {
+        if (this.health <= 0) {
+            this.isDisposed = true;
+        }
+
     }
 
 

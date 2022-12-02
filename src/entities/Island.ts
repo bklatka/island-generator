@@ -4,14 +4,9 @@ import { DrawnParts } from "../types/DrawBlock";
 import { getIslandPositions } from "../utils/getIslandPositions";
 import { generateRandomIsland } from "../shapeCalculators/generateRandomIsland";
 import { TileMap } from "../painters/drawIslandPart";
-import { Coordinates } from "../types/Coordinates";
 import { drawImageInGrid } from "../painters/drawImageInGrid";
 
 
-interface DrawingBlocks {
-    coord: Coordinates;
-    tile: HTMLImageElement;
-}
 export class Island extends Entity {
     public blocks: DrawnParts[];
     private drawningBlocks
@@ -29,8 +24,6 @@ export class Island extends Entity {
                 tile: image,
             }
         })
-
-        game.layers.islands.push(this.blocks);
     }
 
     draw() {
@@ -38,6 +31,4 @@ export class Island extends Entity {
             drawImageInGrid(this.game.ctx, block.tile, block.coord);
         })
     }
-
-    update() {}
 }

@@ -37,9 +37,11 @@ export class Canonball extends Entity {
 
         this.canonballImage = new Image()
         this.canonballImage.src = CanonballImage;
+
     }
 
     update() {
+        this.detectCollisionWithShip();
         this.position = animateElementToDestination(this.game.ctx, this.position, this.destination, this.speed);
 
         if (arePointsTheSame(this.position, this.destination)) {
@@ -49,5 +51,14 @@ export class Canonball extends Entity {
 
     draw() {
         drawImageInGrid(this.game.ctx, this.canonballImage, this.position, 0.4);
+    }
+
+    private detectCollisionWithShip() {
+        const hitShip = this.game.layers.ships.find(ship => arePointsTheSame(ship.position, this.position, 0.5))
+
+        if (hitShip) {
+            hitShip.takeDamage(this);
+            this.isDisposed = true;
+        }
     }
 }

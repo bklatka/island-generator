@@ -1,7 +1,10 @@
-import { DrawnParts } from "./DrawBlock";
+import { Canonball } from "../entities/Canonball";
+import { Ship } from "../entities/Ship";
+import { Island } from "../entities/Island";
 
 
 export interface Layers {
-    islands: DrawnParts[][],
-    ships: any[];
+    islands: Island[],
+    ships: Ship[];
+    canonballs: Canonball[];
 }

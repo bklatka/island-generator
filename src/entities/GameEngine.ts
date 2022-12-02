@@ -3,6 +3,9 @@ import { Entity } from "./Entity";
 import { GAME_CONFIG } from "../constants/GameConfig";
 import { gridToPx, pxToGrid } from "../utils/gridToPx";
 import { UserControls } from "../types/UserControls";
+import { Ship } from "./Ship";
+import { Island } from "./Island";
+import { Canonball } from "./Canonball";
 
 
 export interface GameControls {
@@ -49,6 +52,21 @@ export class GameEngine {
 
     public addEntity(entity: Entity) {
         this.entities.push(entity);
+    }
+
+    public addShip(ship: Ship) {
+        this.addEntity(ship);
+        this.layers.ships.push(ship);
+    }
+
+    public addIsland(island: Island) {
+        this.addEntity(island);
+        this.layers.islands.push(island);
+    }
+
+    public addCanonball(canonball: Canonball) {
+        this.addEntity(canonball);
+        this.layers.canonballs.push(canonball);
     }
 
     private gameLoop() {
@@ -160,6 +178,7 @@ export class GameEngine {
         this.debug.ticks = this.ticks;
 
         this.entities = this.entities.filter(entity => !entity.isDisposed);
+        this.layers.canonballs = this.layers.canonballs.filter(c => !c.isDisposed);
 
         this.entities.forEach(entity => {
             entity.update();
