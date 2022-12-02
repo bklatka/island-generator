@@ -10,12 +10,13 @@ import { GameEngine } from "./GameEngine";
 import { moveByDirection } from "../utils/movePointByDirection";
 import { getRandomFreePosition } from "../shapeCalculators/getRandomFreePosition";
 import { Directions } from "../types/Directions";
-import { gridCenterToPx } from "../utils/gridToPx";
+import { gridCenterToPx, gridToPx } from "../utils/gridToPx";
 import { GAME_RESOLUTION } from "../painters/drawGameGrid";
 import { arePointsTheSame } from "../utils/arePointsTheSame";
 import { GAME_CONFIG } from "../constants/GameConfig";
 import { UserControls } from "../types/UserControls";
 import { Canonball } from "./Canonball";
+import { rotateElementInGrid } from "../utils/rotateElementInGrid";
 
 export type ShipTypes = 1|2|3|4;
 
@@ -39,18 +40,26 @@ export class Ship extends Entity {
     public id: string;
     public position: Coordinates;
     public direction: Directions = 'bottom';
-    private destinationPosition: Coordinates|null = null;
+
 
 
     public shipType: ShipTypes = 1;
-    private shipImage: HTMLImageElement;
+
+
+    private destinationPosition: Coordinates|null = null;
     private isShipMoving: boolean = false;
 
+    private shipImage: HTMLImageElement;
+
     private shipSpeed: number = GAME_CONFIG.DEFAULT_SHIP_SPEED;
+    private shipCanonDistance: number = GAME_CONFIG.DEFAULT_SHIP_CANON_DISTANCE;
 
     private controls: UserControls;
 
     private hasShootBall: boolean = false;
+
+    private cooldownTime: number = 100;
+    private cooldownStart: number = 0;
 
     constructor(game: GameEngine, id: string, controls: UserControls, shipType: ShipTypes = 1) {
         super(game);
@@ -63,29 +72,25 @@ export class Ship extends Entity {
     }
 
     draw() {
-        this.rotateShip(this.direction, (shipCords) => {
+
+
+        rotateElementInGrid(this.game.ctx, this.direction, this.position, (shipCords) => {
             drawImageInGrid(this.game.ctx, this.shipImage, shipCords);
         })
-    }
 
-    rotateShip(direction: Directions, callback: (newCords: Coordinates) => void) {
-        const angles = {
-            top: 180,
-            left: 90,
-            right: 270,
-            bottom: 0,
+        if (this.hasShootBall) {
+            const { ctx, ticks } = this.game;
+            const cooldownEnd = this.cooldownStart + this.cooldownTime
+            const percentDone = (this.cooldownStart - ticks) / (this.cooldownStart - cooldownEnd);
+
+            const maxCooldownWidth = GAME_RESOLUTION.getGridWidth(ctx);
+
+            const [xPos, yPos] = gridToPx(ctx, this.position)
+
+            ctx.fillStyle = '#c7a100'
+            ctx.rect(xPos, yPos, maxCooldownWidth * percentDone, 5);
+            ctx.fill()
         }
-        const angle = angles[direction];
-
-        const { ctx } = this.game;
-        ctx.save();
-
-        const rotateOrigin = gridCenterToPx(ctx, this.position);
-        ctx.translate(...rotateOrigin)
-        ctx.rotate(angle * Math.PI / 180);
-        callback({ x: -0.5, y: -0.5 })
-        ctx.restore();
-
     }
 
     update() {
@@ -93,6 +98,7 @@ export class Ship extends Entity {
         this.handleUserInput();
         this.stopAnimatingShipOnDestination();
         this.animateShipToDestination();
+        this.countCannonCooldown();
 
         this.game.debug.playerPosition = this.position;
         this.game.debug.isShipMoving = this.isShipMoving;
@@ -128,17 +134,19 @@ export class Ship extends Entity {
             const ballDirection = shipDirectionToBallDirection[this.direction];
             this.shootBall(ballDirection)
         }
+    }
 
+    private countCannonCooldown() {
+        if (this.hasShootBall && this.cooldownStart + this.cooldownTime < this.game.ticks) {
+            this.hasShootBall = false;
+        }
     }
 
     private shootBall(destination: Directions) {
-        this.game.addEntity(new Canonball(this.game, 'ball', this.position, destination, 1, 4))
+        this.game.addEntity(new Canonball(this.game, 'ball', this.position, destination, 1, this.shipCanonDistance))
         this.hasShootBall = true;
 
-        // cooldown
-        setTimeout(() => {
-            this.hasShootBall = false;
-        }, 300);
+        this.cooldownStart = this.game.ticks;
     }
 
     private handleUserMovement() {

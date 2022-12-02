@@ -3,5 +3,6 @@ export const GAME_CONFIG = {
     ISLAND_COUNT: 2,
     SHOW_GRID: true,
     DEBUG: true,
-    DEFAULT_SHIP_SPEED: 3
+    DEFAULT_SHIP_SPEED: 3,
+    DEFAULT_SHIP_CANON_DISTANCE: 4,
 }
