@@ -9,6 +9,7 @@ import { GameEngine } from "./entities/GameEngine";
 import { Island } from "./entities/Island";
 import { Background } from "./entities/Background";
 import { Grid } from "./entities/Grid";
+import { ItemGenerator } from "./entities/ItemGenerator";
 
 function App() {
 
@@ -28,6 +29,7 @@ function App() {
             islands: [],
             ships: [],
             canonballs: [],
+            items: [],
         }
         const canvas = gameRef.current as HTMLCanvasElement;
         const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
@@ -43,6 +45,7 @@ function App() {
 
         game.addEntity(new Background(game))
         game.addEntity(new Grid(game))
+        game.addEntity(new ItemGenerator(game))
         game.addIsland(new Island(game))
         game.addIsland(new Island(game))
         game.addShip(new Ship(game, 'player1', game.controls.player1, 'standard'))

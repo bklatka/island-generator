@@ -6,6 +6,8 @@ import { UserControls } from "../types/UserControls";
 import { Ship } from "./ship/Ship";
 import { Island } from "./Island";
 import { Canonball } from "./Canonball";
+import { ItemType } from "../types/ItemType";
+import { Item } from "./items/Item";
 
 
 export interface GameControls {
@@ -68,6 +70,12 @@ export class GameEngine {
         this.addEntity(canonball);
         this.layers.canonballs.push(canonball);
     }
+
+    public addItem(item: Item) {
+        this.addEntity(item);
+        this.layers.items.push(item);
+    }
+
 
     private gameLoop() {
         this.update();
@@ -178,6 +186,8 @@ export class GameEngine {
         this.debug.ticks = this.ticks;
 
         this.entities = this.entities.filter(entity => !entity.isDisposed);
+        this.layers.items = this.layers.items.filter(item => !item.isDisposed);
+
         this.layers.canonballs = this.layers.canonballs.filter(c => !c.isDisposed);
 
         this.entities.forEach(entity => {
@@ -196,12 +206,16 @@ export class GameEngine {
         })
 
         if (GAME_CONFIG.DEBUG) {
-            Object.entries(this.debug).forEach(([key, value], index) => {
-                this.ctx.font = "10px Arial"
-                this.ctx.fillStyle = '#000000'
-                this.ctx.fillText(`${key}: ${JSON.stringify(value)}`, 0, 10 * index + 10);
-            })
+            this.drawDebug();
         }
+    }
+
+    private drawDebug() {
+        Object.entries(this.debug).forEach(([key, value], index) => {
+            this.ctx.font = "10px Arial"
+            this.ctx.fillStyle = '#000000'
+            this.ctx.fillText(`${key}: ${JSON.stringify(value)}`, 0, 10 * index + 10);
+        })
     }
 
 

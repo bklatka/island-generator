@@ -6,8 +6,6 @@ import { GameEngine } from "../GameEngine";
 import { moveByDirection } from "../../utils/movePointByDirection";
 import { getRandomFreePosition } from "../../shapeCalculators/getRandomFreePosition";
 import { Directions } from "../../types/Directions";
-import { gridToPx } from "../../utils/gridToPx";
-import { GAME_RESOLUTION } from "../../painters/drawGameGrid";
 import { arePointsTheSame } from "../../utils/arePointsTheSame";
 import { GAME_CONFIG } from "../../constants/GameConfig";
 import { UserControls } from "../../types/UserControls";
@@ -18,6 +16,7 @@ import { roundGridPosition } from "../../utils/roundGridPosition";
 import { ShipHealthState } from "./ShipHealthState";
 import { ShipType } from "../../types/Ship";
 import { Cannon } from "./Cannon";
+import { ItemType } from "../../types/ItemType";
 
 
 const ControlsToMove: Record<string, Directions> = {
@@ -47,7 +46,7 @@ export class Ship extends Entity {
     private controls: UserControls;
     private cannon: Cannon;
     private shipHull: ShipHealthState;
-
+    private items: ItemType[] = [];
 
     constructor(game: GameEngine, id: string, controls: UserControls, shipType: ShipType = 'standard') {
         super(game);
@@ -76,9 +75,12 @@ export class Ship extends Entity {
         this.handleUserInput();
         this.stopAnimatingShipOnDestination();
         this.animateShipToDestination();
+        this.pickupItem();
 
         this.shipHull.update(this.health, this.maxHealth);
         this.cannon.update();
+
+
     }
 
     public takeDamage(canonBall: Canonball) {
@@ -136,8 +138,18 @@ export class Ship extends Entity {
                 this.isDisposed = true;
             }, GAME_CONFIG.DEAD_SHIP_LIVING_TIME);
         }
+    }
+
+    private pickupItem() {
+        this.game.layers.items.forEach(item => {
+            if (arePointsTheSame(this.position, item.position)) {
+                this.items.push(item);
+                item.isDisposed = true;
+            }
+        });
 
     }
+
 
 
 }
