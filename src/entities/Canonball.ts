@@ -7,6 +7,7 @@ import { Directions } from "../types/Directions";
 import { times } from "lodash-es";
 import { moveByDirection } from "../utils/movePointByDirection";
 import { arePointsTheSame } from "../utils/arePointsTheSame";
+import { animateElementToDestination } from "../utils/animateMovement";
 
 export class Canonball extends Entity {
     id: string;
@@ -16,6 +17,7 @@ export class Canonball extends Entity {
     direction: Directions;
 
     private destination: Coordinates;
+    private speed: number = 1;
 
     private canonballImage: HTMLImageElement;
 
@@ -38,9 +40,7 @@ export class Canonball extends Entity {
     }
 
     update() {
-        if (this.game.ticks % 5 === 0) {
-            this.position = moveByDirection(this.position, this.direction)
-        }
+        this.position = animateElementToDestination(this.game.ctx, this.position, this.destination, this.speed);
 
         if (arePointsTheSame(this.position, this.destination)) {
             this.isDisposed = true;

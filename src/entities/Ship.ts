@@ -17,6 +17,8 @@ import { GAME_CONFIG } from "../constants/GameConfig";
 import { UserControls } from "../types/UserControls";
 import { Canonball } from "./Canonball";
 import { rotateElementInGrid } from "../utils/rotateElementInGrid";
+import { animateElementToDestination } from "../utils/animateMovement";
+import { roundGridPosition } from "../utils/roundGridPosition";
 
 export type ShipTypes = 1|2|3|4;
 
@@ -94,15 +96,11 @@ export class Ship extends Entity {
     }
 
     update() {
-        this.game.debug.direction = this.direction;
         this.handleUserInput();
         this.stopAnimatingShipOnDestination();
         this.animateShipToDestination();
         this.countCannonCooldown();
 
-        this.game.debug.playerPosition = this.position;
-        this.game.debug.isShipMoving = this.isShipMoving;
-        this.game.debug.destinationPosition = this.destinationPosition;
     }
 
     private handleUserInput() {
@@ -161,26 +159,16 @@ export class Ship extends Entity {
         if (this.destinationPosition && arePointsTheSame(this.position, this.destinationPosition)) {
             this.destinationPosition = null;
             this.isShipMoving = false;
+
             // cleanup after animation movement
-            this.position = {
-                x: Math.round(this.position.x),
-                y: Math.round(this.position.y),
-            }
+            this.position = roundGridPosition(this.position);
         }
     }
 
     private animateShipToDestination() {
         if (this.destinationPosition) {
+            this.position = animateElementToDestination(this.game.ctx, this.position, this.destinationPosition, this.shipSpeed);
             this.isShipMoving = true;
-
-            const horizontalMove = this.destinationPosition.x - this.position.x;
-            const verticalMove = this.destinationPosition.y - this.position.y;
-
-            this.position = {
-                x: this.position.x + horizontalMove * GAME_RESOLUTION.getGridWidth(this.game.ctx) / SHIP_SPEED_DIVIDER * this.shipSpeed,
-                y: this.position.y + verticalMove * GAME_RESOLUTION.getGridHeight(this.game.ctx) / SHIP_SPEED_DIVIDER * this.shipSpeed,
-            }
-
         }
     }
 
