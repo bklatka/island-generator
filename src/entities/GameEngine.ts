@@ -6,7 +6,6 @@ import { UserControls } from "../types/UserControls";
 import { Ship } from "./ship/Ship";
 import { Island } from "./Island";
 import { Canonball } from "./Canonball";
-import { ItemType } from "../types/ItemType";
 import { Item } from "./items/Item";
 
 

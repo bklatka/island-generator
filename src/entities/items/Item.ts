@@ -49,6 +49,6 @@ export class Item extends Entity {
     }
 
     draw() {
-        drawImageInGrid(this.game.ctx, this.image, this.position)
+        drawImageInGrid(this.game.ctx, this.image, this.position, 0.5)
     }
 }

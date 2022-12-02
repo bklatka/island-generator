@@ -52,6 +52,16 @@ export class Cannon extends Entity {
         const ballDirection = shipDirectionToBallDirection[direction];
         this.shootBall(shipPosition, ballDirection)
     }
+
+
+    public increaseDistance(value: number) {
+        this.shootDistance += value;
+    }
+
+    public increasePower(value: number) {
+        this.power += value;
+    }
+
     public shootRight(shipPosition: Coordinates, direction: Directions) {
         const shipDirectionToBallDirection: Record<Directions, Directions> = {
             top: 'right',

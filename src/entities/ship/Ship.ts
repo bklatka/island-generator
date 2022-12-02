@@ -16,7 +16,7 @@ import { roundGridPosition } from "../../utils/roundGridPosition";
 import { ShipHealthState } from "./ShipHealthState";
 import { ShipType } from "../../types/Ship";
 import { Cannon } from "./Cannon";
-import { ItemType } from "../../types/ItemType";
+import { ItemEffect, ItemType } from "../../types/ItemType";
 
 
 const ControlsToMove: Record<string, Directions> = {
@@ -76,11 +76,10 @@ export class Ship extends Entity {
         this.stopAnimatingShipOnDestination();
         this.animateShipToDestination();
         this.pickupItem();
+        this.updateStatsWithItems();
 
         this.shipHull.update(this.health, this.maxHealth);
         this.cannon.update();
-
-
     }
 
     public takeDamage(canonBall: Canonball) {
@@ -147,7 +146,25 @@ export class Ship extends Entity {
                 item.isDisposed = true;
             }
         });
+    }
 
+    private updateStatsWithItems() {
+        this.items = this.items.filter(item => {
+            item.effect.forEach(effect => this.itemEffectToStats(effect))
+            return false;
+        })
+    }
+
+    private itemEffectToStats(effect: ItemEffect) {
+        if (effect.power) {
+            this.cannon.increasePower(effect.power)
+        }
+        if (effect.speed) {
+            this.shipSpeed += effect.speed
+        }
+        if (effect.shootDistance) {
+            this.cannon.increaseDistance(effect.shootDistance)
+        }
     }
 
 
