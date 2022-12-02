@@ -14,6 +14,7 @@ export interface GameControls {
     player2: UserControls;
 }
 
+export type GameState = 'start' | 'end'
 export class GameEngine {
     public ctx: CanvasRenderingContext2D;
     public layers: Layers;
@@ -40,6 +41,7 @@ export class GameEngine {
             shootRight: false,
         }
     };
+    public gameState: GameState = 'start';
 
     constructor(ctx: CanvasRenderingContext2D, layers: Layers) {
         this.ctx = ctx;
@@ -192,13 +194,13 @@ export class GameEngine {
         this.entities.forEach(entity => {
             entity.update();
         })
+
+        this.checkIfRoundIsWon();
     }
 
     private draw() {
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         this.ctx.save();
-
-
 
         this.entities.forEach((entity) => {
             entity.draw();
@@ -215,6 +217,18 @@ export class GameEngine {
             this.ctx.fillStyle = '#000000'
             this.ctx.fillText(`${key}: ${JSON.stringify(value)}`, 0, 10 * index + 10);
         })
+    }
+
+    private checkIfRoundIsWon() {
+        const { ships } = this.layers;
+        const destroyedShips = ships.filter(ship => ship.isDisposed);
+        this.debug.gameState = this.gameState;
+
+        if (destroyedShips.length === 1) {
+            this.gameState = 'end';
+            document?.getElementById('App')?.classList.add('finished')
+        }
+
     }
 
 

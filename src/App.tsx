@@ -61,10 +61,19 @@ function App() {
 
 
   return (
-    <div className="App">
+    <div className="App" id={"App"}>
         <p>Player 1: Arrow keys to move, "." and "/" to shoot </p>
         <p>Player 2: WASD to move, "e" and "q" to shoot</p>
+
+
+        <div className="game-wrapper">
+            <div className={"finish-msg"}>
+                Game finished!
+                {/* eslint-disable-next-line no-restricted-globals */}
+                <a href={"/"}>Press here to restart</a>
+            </div>
       <canvas ref={gameRef} width={800} height={600} id={'main'} />
+        </div>
     </div>
   );
 }
