@@ -9,8 +9,9 @@ import Ship2Hit from "../../assets/ships/ship2/hit.png";
 import Ship2Bad from "../../assets/ships/ship2/bad.png";
 import Ship2Dead from "../../assets/ships/ship2/dead.png";
 import { ShipHealthStateType, ShipType } from "../../types/Ship";
-
-
+import { gridToPx } from "../../utils/gridToPx";
+import { GAME_RESOLUTION } from "../../painters/drawGameGrid";
+import { Coordinates } from "../../types/Coordinates";
 
 
 const SHIP_MAP: Record<ShipType, Record<ShipHealthStateType, string>> = {
@@ -44,6 +45,9 @@ export class ShipHealthState extends Entity {
         this.shipImage = this.shipGraphics.good;
     }
 
+    draw(shipPosition: Coordinates, health: number, maxHealth: number) {
+        this.drawHealthBar(shipPosition, health, maxHealth);
+    }
 
     update(health: number, maxHealth: number) {
         this.calculateShipState(health, maxHealth);
@@ -65,5 +69,20 @@ export class ShipHealthState extends Entity {
 
     private chooseCorrectShipImage() {
         this.shipImage = this.shipGraphics[this.shipHealthState];
+    }
+
+    private drawHealthBar(shipPosition: Coordinates, health: number, maxHealth: number) {
+        const { ctx } = this.game;
+
+        const [xPos, yPos] = gridToPx(ctx, shipPosition);
+        const gridHeight = GAME_RESOLUTION.getGridHeight(ctx);
+        const gridWidth = GAME_RESOLUTION.getGridWidth(ctx);
+
+        const percentHealth = health/maxHealth;
+
+        ctx.beginPath();
+        ctx.fillStyle = '#1fff24'
+        ctx.rect(xPos, yPos + gridHeight - 5, gridWidth * percentHealth, 5);
+        ctx.fill();
     }
 }

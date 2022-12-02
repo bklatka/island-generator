@@ -17,6 +17,7 @@ import { animateElementToDestination } from "../../utils/animateMovement";
 import { roundGridPosition } from "../../utils/roundGridPosition";
 import { ShipHealthState } from "./ShipHealthState";
 import { ShipType } from "../../types/Ship";
+import { Cannon } from "./Cannon";
 
 
 const ControlsToMove: Record<string, Directions> = {
@@ -25,8 +26,6 @@ const ControlsToMove: Record<string, Directions> = {
     down: 'bottom',
     right: 'right'
 }
-
-
 
 const DEFAULT_HEALTH = 100;
 export class Ship extends Entity {
@@ -40,41 +39,36 @@ export class Ship extends Entity {
     private isDead: boolean = false;
     private maxHealth: number = DEFAULT_HEALTH;
     private shipSpeed: number = GAME_CONFIG.DEFAULT_SHIP_SPEED;
-    private shipCanonDistance: number = GAME_CONFIG.DEFAULT_SHIP_CANON_DISTANCE;
 
     private destinationPosition: Coordinates|null = null;
     private isShipMoving: boolean = false;
 
 
     private controls: UserControls;
+    private cannon: Cannon;
+    private shipHull: ShipHealthState;
 
-    private shipState: ShipHealthState;
-
-    private hasShootBall: boolean = false;
-
-    private cooldownTime: number = 100;
-    private cooldownStart: number = 0;
 
     constructor(game: GameEngine, id: string, controls: UserControls, shipType: ShipType = 'standard') {
         super(game);
         this.position = getRandomFreePosition(getIslandPositions(game.layers));
 
-        this.shipState = new ShipHealthState(game, shipType)
+        this.shipHull = new ShipHealthState(game, shipType)
 
         this.id = id;
         this.controls = controls;
+
+        this.cannon = new Cannon(game, GAME_CONFIG.DEFAULT_CANON_POWER, GAME_CONFIG.DEFAULT_SHIP_CANON_DISTANCE)
+
     }
 
     draw() {
         rotateElementInGrid(this.game.ctx, this.direction, this.position, (shipCords) => {
-            drawImageInGrid(this.game.ctx, this.shipState.shipImage, shipCords);
+            drawImageInGrid(this.game.ctx, this.shipHull.shipImage, shipCords);
         })
 
-        if (this.hasShootBall) {
-            this.drawCooldownBar();
-        }
-
-        this.drawHealthBar();
+        this.cannon.draw(this.position);
+        this.shipHull.draw(this.position, this.health, this.maxHealth);
     }
 
     update() {
@@ -82,46 +76,13 @@ export class Ship extends Entity {
         this.handleUserInput();
         this.stopAnimatingShipOnDestination();
         this.animateShipToDestination();
-        this.countCannonCooldown();
 
-        this.shipState.update(this.health, this.maxHealth);
+        this.shipHull.update(this.health, this.maxHealth);
+        this.cannon.update();
     }
 
     public takeDamage(canonBall: Canonball) {
         this.health = this.health - canonBall.power;
-    }
-
-
-    private drawCooldownBar() {
-        const { ctx, ticks } = this.game;
-        const cooldownEnd = this.cooldownStart + this.cooldownTime
-        const percentDone = (this.cooldownStart - ticks) / (this.cooldownStart - cooldownEnd);
-
-        const maxCooldownWidth = GAME_RESOLUTION.getGridWidth(ctx);
-
-        const [xPos, yPos] = gridToPx(ctx, this.position)
-
-
-        ctx.beginPath();
-        ctx.fillStyle = '#ffdd18'
-        ctx.rect(xPos, yPos, maxCooldownWidth * percentDone, 5);
-        ctx.fill();
-    }
-
-    private drawHealthBar() {
-        const { ctx } = this.game;
-
-        const [xPos, yPos] = gridToPx(ctx, this.position);
-        const gridHeight = GAME_RESOLUTION.getGridHeight(ctx);
-        const gridWidth = GAME_RESOLUTION.getGridWidth(ctx);
-
-        const percentHealth = this.health/this.maxHealth;
-
-        ctx.beginPath();
-        ctx.fillStyle = '#1fff24'
-        ctx.rect(xPos, yPos + gridHeight - 5, gridWidth * percentHealth, 5);
-        ctx.fill();
-
     }
 
     private handleUserInput() {
@@ -133,43 +94,15 @@ export class Ship extends Entity {
     }
 
     private handleUserShoot() {
-        if (this.controls.shootLeft && !this.isShipMoving && !this.hasShootBall) {
-            const shipDirectionToBallDirection: Record<Directions, Directions> = {
-                top: 'left',
-                left: 'bottom',
-                right: 'top',
-                bottom: 'right',
-            }
-
-            const ballDirection = shipDirectionToBallDirection[this.direction];
-            this.shootBall(ballDirection)
+        if (this.controls.shootLeft && !this.isShipMoving && !this.cannon.isOnCooldown) {
+           this.cannon.shootLeft(this.position, this.direction);
         }
 
-        if (this.controls.shootRight && !this.isShipMoving && !this.hasShootBall) {
-            const shipDirectionToBallDirection: Record<Directions, Directions> = {
-                top: 'right',
-                left: 'top',
-                right: 'bottom',
-                bottom: 'left',
-            }
-
-            const ballDirection = shipDirectionToBallDirection[this.direction];
-            this.shootBall(ballDirection)
+        if (this.controls.shootRight && !this.isShipMoving && !this.cannon.isOnCooldown) {
+           this.cannon.shootRight(this.position, this.direction)
         }
     }
 
-    private countCannonCooldown() {
-        if (this.hasShootBall && this.cooldownStart + this.cooldownTime < this.game.ticks) {
-            this.hasShootBall = false;
-        }
-    }
-
-    private shootBall(direction: Directions) {
-        this.game.addCanonball(new Canonball(this.game, 'ball', moveByDirection(this.position, direction), direction, 20, this.shipCanonDistance))
-        this.hasShootBall = true;
-
-        this.cooldownStart = this.game.ticks;
-    }
 
     private handleUserMovement() {
         const pressedMoveButton: string|undefined = Object.entries(this.controls).filter(([key]) => ['up', 'down', 'left', 'right'].includes(key)).find(([key, isPressed]) => isPressed)?.[0]

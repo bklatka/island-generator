@@ -9,7 +9,7 @@ export class Entity {
         this.game = game;
     }
 
-    draw(): void {
+    draw(...args: any[]): void {
 
     }
 
