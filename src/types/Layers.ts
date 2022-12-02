@@ -1,5 +1,5 @@
 import { Canonball } from "../entities/Canonball";
-import { Ship } from "../entities/Ship";
+import { Ship } from "../entities/ship/Ship";
 import { Island } from "../entities/Island";
 
 

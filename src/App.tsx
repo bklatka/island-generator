@@ -4,7 +4,7 @@ import { drawBackground } from "./painters/drawBackground";
 import { drawGameGrid } from "./painters/drawGameGrid";
 import { GAME_CONFIG } from "./constants/GameConfig";
 import { Layers } from "./types/Layers";
-import { Ship } from "./entities/Ship";
+import { Ship } from "./entities/ship/Ship";
 import { GameEngine } from "./entities/GameEngine";
 import { Island } from "./entities/Island";
 import { Background } from "./entities/Background";
@@ -45,8 +45,8 @@ function App() {
         game.addEntity(new Grid(game))
         game.addIsland(new Island(game))
         game.addIsland(new Island(game))
-        game.addShip(new Ship(game, 'player1', game.controls.player1, 1))
-        game.addShip(new Ship(game, 'player2', game.controls.player2, 2))
+        game.addShip(new Ship(game, 'player1', game.controls.player1, 'standard'))
+        game.addShip(new Ship(game, 'player2', game.controls.player2, 'pirate'))
 
 
         game.init();

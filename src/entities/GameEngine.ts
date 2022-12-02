@@ -1,9 +1,9 @@
 import { Layers } from "../types/Layers";
 import { Entity } from "./Entity";
 import { GAME_CONFIG } from "../constants/GameConfig";
-import { gridToPx, pxToGrid } from "../utils/gridToPx";
+import { pxToGrid } from "../utils/gridToPx";
 import { UserControls } from "../types/UserControls";
-import { Ship } from "./Ship";
+import { Ship } from "./ship/Ship";
 import { Island } from "./Island";
 import { Canonball } from "./Canonball";
 

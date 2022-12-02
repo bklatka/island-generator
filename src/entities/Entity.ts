@@ -13,7 +13,7 @@ export class Entity {
 
     }
 
-    update(): void {
+    update(...args: any[]): void {
 
     }
 }

@@ -1,30 +1,22 @@
-import { Coordinates } from "../types/Coordinates";
-import { getIslandPositions } from "../utils/getIslandPositions";
-import { Entity } from "./Entity";
-import Ship1 from '../assets/ships/ship1/good.png';
-import Ship2 from '../assets/ships/ship2/good.png';
-import { drawImageInGrid } from "../painters/drawImageInGrid";
-import { GameEngine } from "./GameEngine";
-import { moveByDirection } from "../utils/movePointByDirection";
-import { getRandomFreePosition } from "../shapeCalculators/getRandomFreePosition";
-import { Directions } from "../types/Directions";
-import { gridToPx } from "../utils/gridToPx";
-import { GAME_RESOLUTION } from "../painters/drawGameGrid";
-import { arePointsTheSame } from "../utils/arePointsTheSame";
-import { GAME_CONFIG } from "../constants/GameConfig";
-import { UserControls } from "../types/UserControls";
-import { Canonball } from "./Canonball";
-import { rotateElementInGrid } from "../utils/rotateElementInGrid";
-import { animateElementToDestination } from "../utils/animateMovement";
-import { roundGridPosition } from "../utils/roundGridPosition";
-import Ship1Hit from '../assets/ships/ship1/hit.png';
-import Ship1Bad from '../assets/ships/ship1/bad.png';
-import Ship1Dead from '../assets/ships/ship1/dead.png';
-import Ship2Hit from '../assets/ships/ship2/hit.png';
-import Ship2Bad from '../assets/ships/ship2/bad.png';
-import Ship2Dead from '../assets/ships/ship2/dead.png';
-
-export type ShipTypes = 1|2|3|4;
+import { Coordinates } from "../../types/Coordinates";
+import { getIslandPositions } from "../../utils/getIslandPositions";
+import { Entity } from "../Entity";
+import { drawImageInGrid } from "../../painters/drawImageInGrid";
+import { GameEngine } from "../GameEngine";
+import { moveByDirection } from "../../utils/movePointByDirection";
+import { getRandomFreePosition } from "../../shapeCalculators/getRandomFreePosition";
+import { Directions } from "../../types/Directions";
+import { gridToPx } from "../../utils/gridToPx";
+import { GAME_RESOLUTION } from "../../painters/drawGameGrid";
+import { arePointsTheSame } from "../../utils/arePointsTheSame";
+import { GAME_CONFIG } from "../../constants/GameConfig";
+import { UserControls } from "../../types/UserControls";
+import { Canonball } from "../Canonball";
+import { rotateElementInGrid } from "../../utils/rotateElementInGrid";
+import { animateElementToDestination } from "../../utils/animateMovement";
+import { roundGridPosition } from "../../utils/roundGridPosition";
+import { ShipHealthState } from "./ShipHealthState";
+import { ShipType } from "../../types/Ship";
 
 
 const ControlsToMove: Record<string, Directions> = {
@@ -34,13 +26,7 @@ const ControlsToMove: Record<string, Directions> = {
     right: 'right'
 }
 
-type ShipState = 'good' | 'hit' | 'bad' | 'dead';
-const SHIP_MAP: Record<number, Record<ShipState, string>> = {
-    1: { good: Ship1, hit: Ship1Hit, bad: Ship1Bad, dead: Ship1Dead },
-    2: { good: Ship2, hit: Ship2Hit, bad: Ship2Bad, dead: Ship2Dead },
-    // 3: Ship3,
-    // 4: Ship4,
-}
+
 
 const DEFAULT_HEALTH = 100;
 export class Ship extends Entity {
@@ -53,40 +39,27 @@ export class Ship extends Entity {
     private health: number = DEFAULT_HEALTH;
     private isDead: boolean = false;
     private maxHealth: number = DEFAULT_HEALTH;
-    public shipType: ShipTypes = 1;
     private shipSpeed: number = GAME_CONFIG.DEFAULT_SHIP_SPEED;
     private shipCanonDistance: number = GAME_CONFIG.DEFAULT_SHIP_CANON_DISTANCE;
 
-
-    private shipState: ShipState = 'good';
     private destinationPosition: Coordinates|null = null;
     private isShipMoving: boolean = false;
 
-    private shipImages: Record<ShipState, HTMLImageElement>;
 
     private controls: UserControls;
+
+    private shipState: ShipHealthState;
 
     private hasShootBall: boolean = false;
 
     private cooldownTime: number = 100;
     private cooldownStart: number = 0;
 
-    constructor(game: GameEngine, id: string, controls: UserControls, shipType: ShipTypes = 1) {
+    constructor(game: GameEngine, id: string, controls: UserControls, shipType: ShipType = 'standard') {
         super(game);
         this.position = getRandomFreePosition(getIslandPositions(game.layers));
-        this.shipType = shipType;
 
-        const shipGraphics = SHIP_MAP[shipType];
-        this.shipImages = {
-            good: new Image(),
-            hit: new Image(),
-            bad: new Image(),
-            dead: new Image(),
-        }
-        this.shipImages.good.src = shipGraphics.good
-        this.shipImages.hit.src = shipGraphics.hit
-        this.shipImages.bad.src = shipGraphics.bad
-        this.shipImages.dead.src = shipGraphics.dead
+        this.shipState = new ShipHealthState(game, shipType)
 
         this.id = id;
         this.controls = controls;
@@ -94,7 +67,7 @@ export class Ship extends Entity {
 
     draw() {
         rotateElementInGrid(this.game.ctx, this.direction, this.position, (shipCords) => {
-            drawImageInGrid(this.game.ctx, this.shipImages[this.shipState], shipCords);
+            drawImageInGrid(this.game.ctx, this.shipState.shipImage, shipCords);
         })
 
         if (this.hasShootBall) {
@@ -110,25 +83,15 @@ export class Ship extends Entity {
         this.stopAnimatingShipOnDestination();
         this.animateShipToDestination();
         this.countCannonCooldown();
-        this.calculateShipState();
+
+        this.shipState.update(this.health, this.maxHealth);
     }
 
     public takeDamage(canonBall: Canonball) {
         this.health = this.health - canonBall.power;
     }
 
-    private calculateShipState() {
-        const healthPercentage = this.health / this.maxHealth * 100;
-        if (healthPercentage >= 70) {
-            this.shipState = 'good';
-        } else if (healthPercentage >= 40) {
-            this.shipState = 'hit';
-        } else if (healthPercentage >= 20) {
-            this.shipState = 'bad';
-        } else if (healthPercentage <= 0) {
-            this.shipState = 'dead'
-        }
-    }
+
     private drawCooldownBar() {
         const { ctx, ticks } = this.game;
         const cooldownEnd = this.cooldownStart + this.cooldownTime
