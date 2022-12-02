@@ -48,6 +48,6 @@ export class Canonball extends Entity {
     }
 
     draw() {
-        drawImageInGrid(this.game.ctx, this.canonballImage, this.position, 0.5);
+        drawImageInGrid(this.game.ctx, this.canonballImage, this.position, 0.25);
     }
 }
