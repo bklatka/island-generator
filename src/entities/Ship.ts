@@ -3,14 +3,12 @@ import { getIslandPositions } from "../utils/getIslandPositions";
 import { Entity } from "./Entity";
 import Ship1 from '../assets/ships/ship1/good.png';
 import Ship2 from '../assets/ships/ship2/good.png';
-import Ship3 from '../assets/ships/ship3.png';
-import Ship4 from '../assets/ships/ship4.png';
 import { drawImageInGrid } from "../painters/drawImageInGrid";
 import { GameEngine } from "./GameEngine";
 import { moveByDirection } from "../utils/movePointByDirection";
 import { getRandomFreePosition } from "../shapeCalculators/getRandomFreePosition";
 import { Directions } from "../types/Directions";
-import { gridCenterToPx, gridToPx } from "../utils/gridToPx";
+import { gridToPx } from "../utils/gridToPx";
 import { GAME_RESOLUTION } from "../painters/drawGameGrid";
 import { arePointsTheSame } from "../utils/arePointsTheSame";
 import { GAME_CONFIG } from "../constants/GameConfig";
@@ -53,6 +51,7 @@ export class Ship extends Entity {
 
     // Game props
     private health: number = DEFAULT_HEALTH;
+    private isDead: boolean = false;
     private maxHealth: number = DEFAULT_HEALTH;
     public shipType: ShipTypes = 1;
     private shipSpeed: number = GAME_CONFIG.DEFAULT_SHIP_SPEED;
@@ -163,7 +162,7 @@ export class Ship extends Entity {
     }
 
     private handleUserInput() {
-        if (this.isDisposed) {
+        if (this.isDisposed || this.isDead) {
             return;
         }
         this.handleUserMovement();
@@ -236,9 +235,10 @@ export class Ship extends Entity {
 
     private handleShipDead() {
         if (this.health <= 0) {
+            this.isDead = true;
             setTimeout(() => {
                 this.isDisposed = true;
-            }, 3000);
+            }, GAME_CONFIG.DEAD_SHIP_LIVING_TIME);
         }
 
     }
