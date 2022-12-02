@@ -2,7 +2,7 @@ export const GAME_CONFIG = {
     GAME_RESOLUTION: 24,
     ISLAND_COUNT: 2,
     SHOW_GRID: true,
-    DEBUG: true,
+    DEBUG: process.env.NODE_ENV === 'development',
     DEFAULT_SHIP_SPEED: 3,
     DEFAULT_SHIP_CANON_DISTANCE: 4,
     DEAD_SHIP_LIVING_TIME: 3000,
