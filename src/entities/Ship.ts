@@ -107,7 +107,9 @@ export class Ship extends Entity {
 
         const [xPos, yPos] = gridToPx(ctx, this.position)
 
-        ctx.fillStyle = '#e5bb00'
+
+        ctx.beginPath();
+        ctx.fillStyle = '#ffdd18'
         ctx.rect(xPos, yPos, maxCooldownWidth * percentDone, 5);
         ctx.fill();
     }
@@ -121,9 +123,11 @@ export class Ship extends Entity {
 
         const percentHealth = this.health/this.maxHealth;
 
+        ctx.beginPath();
         ctx.fillStyle = '#1fff24'
         ctx.rect(xPos, yPos + gridHeight - 5, gridWidth * percentHealth, 5);
         ctx.fill();
+
     }
 
     private handleUserInput() {
