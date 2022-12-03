@@ -14,19 +14,35 @@ export function drawImageInGridWithSrc(ctx: CanvasRenderingContext2D, image: str
     img.src = image;
 }
 
-export function drawImageInGrid(ctx: CanvasRenderingContext2D, image: HTMLImageElement, coord: Coordinates, scale: number = 1) {
+export function drawImageInGrid(ctx: CanvasRenderingContext2D, image: HTMLImageElement, coord: Coordinates, scale: number = 1, keepRatio?: boolean) {
     const [posX, posY] = gridToPx(ctx, coord);
     const { getGridWidth, getGridHeight } = GAME_RESOLUTION
 
     const gridW = getGridWidth(ctx);
     const gridH = getGridHeight(ctx);
 
-
-    const imageWidth = gridW * scale;
-    const imageHeight = gridH * scale;
-
     ctx.save();
     ctx.translate(posX, posY);
-    ctx.drawImage(image, gridW / 2 - imageWidth / 2, gridH / 2 - imageHeight / 2, gridW * scale, gridH * scale);
+    if (keepRatio) {
+        const imageWidth = image.width * scale
+        const imageHeight = image.height * scale
+        ctx.drawImage(
+            image,
+            gridW / 2 - imageWidth / 2 ,
+            gridH / 2 - imageHeight / 2,
+            imageWidth,
+            imageHeight
+        );
+    } else {
+        const imageWidth = gridW * scale;
+        const imageHeight = gridH * scale;
+        ctx.drawImage(
+            image,
+            gridW / 2 - imageWidth / 2,
+            gridH / 2 - imageHeight / 2,
+            imageWidth,
+            imageHeight,
+        );
+    }
     ctx.restore();
 }
