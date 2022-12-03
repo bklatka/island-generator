@@ -14,6 +14,25 @@ export interface GameControls {
     player2: UserControls;
 }
 
+const KEY_BINDINGS = {
+    player1: {
+        up: "ArrowUp",
+        down: "ArrowDown",
+        left: "ArrowLeft",
+        right: "ArrowRight",
+        shootLeft: "Period",
+        shootRight: "Slash",
+    },
+    player2: {
+        up: "KeyW",
+        down: "KeyS",
+        left: "KeyA",
+        right: "KeyD",
+        shootLeft: "KeyQ",
+        shootRight: "KeyE",
+    }
+}
+
 export type GameState = 'start' | 'end'
 export class GameEngine {
     public ctx: CanvasRenderingContext2D;
@@ -97,43 +116,21 @@ export class GameEngine {
 
     private onKeyDown(ev: KeyboardEvent) {
         const { player1, player2 } = this.controls;
-        switch (ev.code) {
-            case "ArrowLeft":
-                player1.left = true;
-                break;
-            case "KeyA":
-                player2.left = true;
-                break;
-            case "ArrowRight":
-                player1.right = true;
-                break;
-            case "KeyD":
-                player2.right = true;
-                break;
-            case "ArrowUp":
-                player1.up = true;
-                break;
-            case "KeyW":
-                player2.up = true;
-                break;
-            case "ArrowDown":
-                player1.down = true;
-                break;
-            case "KeyS":
-                player2.down = true;
-                break;
-            case "Slash":
-                player1.shootRight = true;
-                break;
-            case "Period":
-                player1.shootLeft = true;
-                break;
-            case "KeyQ":
-                player2.shootLeft = true;
-                break;
-            case "KeyE":
-                player2.shootRight = true;
-                break;
+
+        const player1Controls = Object.entries(KEY_BINDINGS.player1);
+        const player2Controls = Object.entries(KEY_BINDINGS.player2);
+
+        const player1Action = player1Controls.find(([action, key]) => key === ev.code);
+        const player2Action = player2Controls.find(([action, key]) => key === ev.code);
+
+        if (player1Action) {
+            const [action] = player1Action;
+            player1[action as keyof UserControls] = true;
+        }
+
+        if (player2Action) {
+            const [action] = player2Action;
+            player2[action as keyof UserControls] = true;
         }
         this.debug.pressedKey = ev.code;
         this.debug.player1Controls = this.controls.player1;
@@ -142,43 +139,21 @@ export class GameEngine {
 
     private onKeyUp(ev: KeyboardEvent) {
         const { player1, player2 } = this.controls;
-        switch (ev.code) {
-            case "ArrowLeft":
-                player1.left = false;
-                break;
-            case "KeyA":
-                player2.left = false;
-                break;
-            case "ArrowRight":
-                player1.right = false;
-                break;
-            case "KeyD":
-                player2.right = false;
-                break;
-            case "ArrowUp":
-                player1.up = false;
-                break;
-            case "KeyW":
-                player2.up = false;
-                break;
-            case "ArrowDown":
-                player1.down = false;
-                break;
-            case "KeyS":
-                player2.down = false;
-                break;
-            case "Slash":
-                player1.shootRight = false;
-                break;
-            case "Period":
-                player1.shootLeft = false;
-                break;
-            case "KeyQ":
-                player2.shootLeft = false;
-                break;
-            case "KeyE":
-                player2.shootRight = false;
-                break;
+
+        const player1Controls = Object.entries(KEY_BINDINGS.player1);
+        const player2Controls = Object.entries(KEY_BINDINGS.player2);
+
+        const player1Action = player1Controls.find(([action, key]) => key === ev.code);
+        const player2Action = player2Controls.find(([action, key]) => key === ev.code);
+
+        if (player1Action) {
+            const [action] = player1Action;
+            player1[action as keyof UserControls] = false;
+        }
+
+        if (player2Action) {
+            const [action] = player2Action;
+            player2[action as keyof UserControls] = false;
         }
     }
 
