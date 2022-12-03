@@ -5,7 +5,9 @@ import EmptyBar from '../assets/ui/uiProgressBlock.png';
 import HealthBar from '../assets/ui/uiHealthBar.png';
 import HealthBarEnd from '../assets/ui/healthEnd.png';
 import { times } from "lodash-es";
-
+import { loadImage } from "../utils/loadImage";
+import superWeaponSlot from '../assets/ui/superweaponslot.png'
+import { Ship } from "./ship/Ship";
 
 const HEALTH_LENGTH = 10;
 
@@ -26,21 +28,20 @@ export class UI extends Entity {
     private emptyBar: HTMLImageElement;
     private healthBar: HTMLImageElement;
     private healthBarEnd: HTMLImageElement;
+    private superWeaponSlot: HTMLImageElement;
 
     constructor(game: GameEngine) {
         super(game);
 
-        this.baseUI = new Image();
-        this.baseUI.src = ShipUi;
+        this.baseUI = loadImage(ShipUi);
+        this.emptyBar = loadImage(EmptyBar);
 
-        this.emptyBar = new Image();
-        this.emptyBar.src = EmptyBar;
+        this.healthBar = loadImage(HealthBar);
 
-        this.healthBar = new Image();
-        this.healthBar.src = HealthBar;
+        this.healthBarEnd = loadImage(HealthBarEnd);
 
-        this.healthBarEnd = new Image();
-        this.healthBarEnd.src = HealthBarEnd;
+        this.healthBarEnd = loadImage(HealthBarEnd);
+        this.superWeaponSlot = loadImage(superWeaponSlot);
     }
 
     update() {
@@ -48,40 +49,29 @@ export class UI extends Entity {
     }
 
     draw() {
-        this.drawPlayer1Ui();
-        this.drawPlayer2Ui();
-    }
-
-    private drawPlayer2Ui() {
         const { ctx } = this.game;
 
+        const player1Ship = this.game.layers.ships.find(ship => ship.id === 'player1')
         const player2Ship = this.game.layers.ships.find(ship => ship.id === 'player2')
 
-
-        if (!player2Ship) {
-            return;
+        if (player1Ship) {
+            this.drawPlayerUi(player1Ship);
         }
 
-        ctx.save();
-        ctx.translate(ctx.canvas.width - 200, 0);
-        this.drawBaseUi();
-        this.drawHealthBarsEmpty();
-        this.drawHealthBarFill(player2Ship.health/player2Ship.maxHealth * 100);
-        this.drawShipAvatar(player2Ship.shipHull.shipImage);
-        ctx.restore();
+        if (player2Ship) {
+            ctx.save();
+            ctx.translate(ctx.canvas.width - 200, 0);
+            this.drawPlayerUi(player2Ship);
+            ctx.restore();
+        }
     }
 
-    private drawPlayer1Ui() {
-        const player1Ship = this.game.layers.ships.find(ship => ship.id === 'player1')
-
-        if (!player1Ship) {
-            return;
-        }
-
+    private drawPlayerUi(playerShip: Ship) {
         this.drawBaseUi();
         this.drawHealthBarsEmpty();
-        this.drawHealthBarFill(player1Ship.health/player1Ship.maxHealth * 100);
-        this.drawShipAvatar(player1Ship.shipHull.shipImage);
+        this.drawSuperWeaponSlot();
+        this.drawHealthBarFill(playerShip.health/playerShip.maxHealth * 100);
+        this.drawShipAvatar(playerShip.shipHull.shipImage);
     }
 
     private drawBaseUi() {
@@ -123,5 +113,13 @@ export class UI extends Entity {
     private drawShipAvatar(avatar: HTMLImageElement) {
         const scale = 0.3;
         this.game.ctx.drawImage(avatar, 22, 15, avatar.width * scale, avatar.height * scale);
+    }
+
+    private drawSuperWeaponSlot() {
+        this.game.ctx.drawImage(
+            this.superWeaponSlot,
+            RULER.baseUI.width - 13,
+            RULER.bar.height + 6,
+            )
     }
 }

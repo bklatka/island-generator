@@ -9,9 +9,6 @@ import Ship2Hit from "../../assets/ships/ship2/hit.png";
 import Ship2Bad from "../../assets/ships/ship2/bad.png";
 import Ship2Dead from "../../assets/ships/ship2/dead.png";
 import { ShipHealthStateType, ShipType } from "../../types/Ship";
-import { gridToPx } from "../../utils/gridToPx";
-import { GAME_RESOLUTION } from "../../painters/drawGameGrid";
-import { Coordinates } from "../../types/Coordinates";
 
 
 const SHIP_MAP: Record<ShipType, Record<ShipHealthStateType, string>> = {
