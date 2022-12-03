@@ -11,6 +11,7 @@ import { Background } from "./entities/Background";
 import { Grid } from "./entities/Grid";
 import { ItemGenerator } from "./entities/ItemGenerator";
 import { UI } from "./entities/UI";
+import { times } from "lodash-es";
 
 function App() {
 
@@ -47,8 +48,11 @@ function App() {
         game.addEntity(new Background(game))
         game.addEntity(new Grid(game))
         game.addEntity(new ItemGenerator(game))
-        game.addIsland(new Island(game))
-        game.addIsland(new Island(game))
+
+        times(GAME_CONFIG.ISLAND_COUNT, () => {
+            game.addIsland(new Island(game))
+        })
+
         game.addShip(new Ship(game, 'player1', game.controls.player1, 'standard'))
         game.addShip(new Ship(game, 'player2', game.controls.player2, 'pirate'))
 

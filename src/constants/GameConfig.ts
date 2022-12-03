@@ -1,6 +1,6 @@
 export const GAME_CONFIG = {
-    GAME_RESOLUTION: 24,
-    ISLAND_COUNT: 2,
+    GAME_RESOLUTION: 32,
+    ISLAND_COUNT: 3,
     SHOW_GRID: true,
     DEBUG: process.env.NODE_ENV === 'development',
     DEFAULT_SHIP_SPEED: 3,
