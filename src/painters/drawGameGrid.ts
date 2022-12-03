@@ -64,6 +64,6 @@ function getYStep(ctx: CanvasRenderingContext2D): number {
 }
 
 
-export function isOutsideGrid(coord: Coordinates, padding: number = 0) {
+export function isOutsideGrid(coord: Coordinates, padding: number = 1) {
     return coord.x < padding || coord.y < padding || coord.x > GAME_RESOLUTION.x - padding || coord.y > GAME_RESOLUTION.y - padding;
 }
