@@ -12,12 +12,10 @@ const ITEM_GENERATE_DELAY = GAME_CONFIG.ITEM_GENERATION_INTERVAL;
 const ITEMS_LIST: ItemName[] = ['shipSpeedUp', 'canonPowerUp', 'canonDistanceUp']
 export class ItemGenerator extends Entity {
     update() {
-        this.game.debug.items = this.game.layers.items.map(item => item.name);
         if (this.game.ticks % ITEM_GENERATE_DELAY === 0 && this.game.layers.items.length < GAME_CONFIG.MAX_ITEMS) {
                 this.generateItem();
         }
     }
-
 
     private generateItem() {
         const position = getRandomFreePosition(getIslandPositions(this.game.layers));

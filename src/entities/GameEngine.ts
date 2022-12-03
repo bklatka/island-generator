@@ -132,9 +132,6 @@ export class GameEngine {
             const [action] = player2Action;
             player2[action as keyof UserControls] = true;
         }
-        this.debug.pressedKey = ev.code;
-        this.debug.player1Controls = this.controls.player1;
-        this.debug.player2Controls = this.controls.player2;
     }
 
     private onKeyUp(ev: KeyboardEvent) {
@@ -190,14 +187,13 @@ export class GameEngine {
         Object.entries(this.debug).forEach(([key, value], index) => {
             this.ctx.font = "10px Arial"
             this.ctx.fillStyle = '#000000'
-            this.ctx.fillText(`${key}: ${JSON.stringify(value)}`, 0, 10 * index + 10);
+            this.ctx.fillText(`${key}: ${JSON.stringify(value)}`, 0, this.ctx.canvas.height - 20 - 10 * index + 10);
         })
     }
 
     private checkIfRoundIsWon() {
         const { ships } = this.layers;
         const destroyedShips = ships.filter(ship => ship.isDisposed);
-        this.debug.gameState = this.gameState;
 
         if (destroyedShips.length === 1) {
             this.gameState = 'end';

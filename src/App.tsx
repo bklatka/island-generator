@@ -10,6 +10,7 @@ import { Island } from "./entities/Island";
 import { Background } from "./entities/Background";
 import { Grid } from "./entities/Grid";
 import { ItemGenerator } from "./entities/ItemGenerator";
+import { UI } from "./entities/UI";
 
 function App() {
 
@@ -50,6 +51,8 @@ function App() {
         game.addIsland(new Island(game))
         game.addShip(new Ship(game, 'player1', game.controls.player1, 'standard'))
         game.addShip(new Ship(game, 'player2', game.controls.player2, 'pirate'))
+
+        game.addEntity(new UI(game))
 
 
         game.init();

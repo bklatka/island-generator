@@ -34,9 +34,9 @@ export class Ship extends Entity {
     public direction: Directions = 'bottom';
 
     // Game props
-    private health: number = DEFAULT_HEALTH;
+    health: number = DEFAULT_HEALTH;
     private isDead: boolean = false;
-    private maxHealth: number = DEFAULT_HEALTH;
+    maxHealth: number = DEFAULT_HEALTH;
     private shipSpeed: number = GAME_CONFIG.DEFAULT_SHIP_SPEED;
 
     private destinationPosition: Coordinates|null = null;
@@ -45,7 +45,7 @@ export class Ship extends Entity {
 
     private controls: UserControls;
     private cannon: Cannon;
-    private shipHull: ShipHealthState;
+    public shipHull: ShipHealthState;
     private items: ItemType[] = [];
 
     constructor(game: GameEngine, id: string, controls: UserControls, shipType: ShipType = 'standard') {
@@ -67,7 +67,6 @@ export class Ship extends Entity {
         })
 
         this.cannon.draw(this.position);
-        this.shipHull.draw(this.position, this.health, this.maxHealth);
     }
 
     update() {

@@ -45,10 +45,6 @@ export class ShipHealthState extends Entity {
         this.shipImage = this.shipGraphics.good;
     }
 
-    draw(shipPosition: Coordinates, health: number, maxHealth: number) {
-        this.drawHealthBar(shipPosition, health, maxHealth);
-    }
-
     update(health: number, maxHealth: number) {
         this.calculateShipState(health, maxHealth);
         this.chooseCorrectShipImage();
@@ -69,20 +65,5 @@ export class ShipHealthState extends Entity {
 
     private chooseCorrectShipImage() {
         this.shipImage = this.shipGraphics[this.shipHealthState];
-    }
-
-    private drawHealthBar(shipPosition: Coordinates, health: number, maxHealth: number) {
-        const { ctx } = this.game;
-
-        const [xPos, yPos] = gridToPx(ctx, shipPosition);
-        const gridHeight = GAME_RESOLUTION.getGridHeight(ctx);
-        const gridWidth = GAME_RESOLUTION.getGridWidth(ctx);
-
-        const percentHealth = health/maxHealth;
-
-        ctx.beginPath();
-        ctx.fillStyle = '#1fff24'
-        ctx.rect(xPos, yPos + gridHeight - 5, gridWidth * percentHealth, 5);
-        ctx.fill();
     }
 }
