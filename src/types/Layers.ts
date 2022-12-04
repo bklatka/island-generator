@@ -3,10 +3,11 @@ import { Ship } from "../entities/ship/Ship";
 import { Island } from "../entities/Island";
 import { ItemType } from "./ItemType";
 import { Item } from "../entities/items/Item";
+import { DrawnParts } from "./DrawBlock";
 
 
 export interface Layers {
-    islands: Island[],
+    islands: DrawnParts[][],
     ships: Ship[];
     canonballs: Canonball[];
     items: Item[];

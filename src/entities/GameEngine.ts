@@ -81,11 +81,6 @@ export class GameEngine {
         this.layers.ships.push(ship);
     }
 
-    public addIsland(island: Island) {
-        this.addEntity(island);
-        this.layers.islands.push(island);
-    }
-
     public addCanonball(canonball: Canonball) {
         this.addEntity(canonball);
         this.layers.canonballs.push(canonball);
