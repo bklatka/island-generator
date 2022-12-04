@@ -12,6 +12,8 @@ import { Grid } from "./entities/Grid";
 import { ItemGenerator } from "./entities/ItemGenerator";
 import { UI } from "./entities/UI";
 import { times } from "lodash-es";
+import { socket, socketManager } from "./network/connection";
+import { PlayerCount } from "./components/PlayerCount";
 
 function App() {
 
@@ -61,6 +63,7 @@ function App() {
 
         game.init();
 
+        socket.emit('test', "This is my payload");
 
 
     }, [hasLoaded])
@@ -69,9 +72,7 @@ function App() {
 
   return (
     <div className="App" id={"App"}>
-        <p>Player 1: Arrow keys to move, "." and "/" to shoot </p>
-        <p>Player 2: WASD to move, "e" and "q" to shoot</p>
-
+        <PlayerCount />
 
         <div className="game-wrapper">
             <div className={"finish-msg"}>
