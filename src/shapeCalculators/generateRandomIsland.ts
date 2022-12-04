@@ -9,10 +9,18 @@ import { DrawnParts } from "../types/DrawBlock";
 import { CENTER_TILES } from "../constants/BlockGroups";
 import { getRandomFreePosition } from "./getRandomFreePosition";
 import { TileMap } from "../painters/drawIslandPart";
+import { GAME_CONFIG } from "../constants/GameConfig";
 
 
 const ISLAND_LENGTH = 30;
 
+
+export function generateInitialIslandData() {
+    return  new Array(GAME_CONFIG.ISLAND_COUNT)
+        .fill([{ coord: [] }])
+        .map((emptyArr, index, islands) => generateRandomIsland(islands.map(island => island.coord)));
+
+}
 
 export function generateRandomIsland(forbiddenZone: Coordinates[] = [], size: number = ISLAND_LENGTH): DrawnParts[] {
     const drawnParts: DrawnParts[] = [];

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
 import { drawBackground } from "./painters/drawBackground";
 import { drawGameGrid } from "./painters/drawGameGrid";
@@ -14,28 +14,48 @@ import { UI } from "./entities/UI";
 import { times } from "lodash-es";
 import { socket } from "./network/connection";
 import { PlayerCount } from "./components/PlayerCount";
-import { generateRandomIsland } from "./shapeCalculators/generateRandomIsland";
+import { generateInitialIslandData, generateRandomIsland } from "./shapeCalculators/generateRandomIsland";
 import { IslandPainter } from "./entities/IslandPainter";
+
 
 function App() {
 
     const gameRef = useRef<HTMLCanvasElement>(null);
 
-    const [hasLoaded, setHasLoaded] = React.useState(false)
+    const [hasLoaded, setHasLoaded] = React.useState(false);
     const [isCreator, setIsCreator] = React.useState(false);
+
+    const [canStart, setCanStart] = useState(false);
+
+    const [islandData, setIslandData] = useState([]);
     useEffect(() => {
         socket.on('userJoined', (playerCount) => {
             if (playerCount === 2) {
                 setHasLoaded(true)
+
+                if (isCreator) {
+                    socket.emit('islandGenerated', generateInitialIslandData())
+                }
             }
         });
 
-        socket.on('setAsCreator', () => setIsCreator(true))
+        socket.on('setAsCreator', () => {
+            setIsCreator(true)
+        })
 
-    }, []);
+        socket.on('gameStart', ({
+            islands,
+                                }) => {
+
+            setIslandData(islands);
+            setCanStart(true)
+        });
+
+
+    }, [isCreator]);
 
     useEffect(() => {
-        if (!hasLoaded) {
+        if (!hasLoaded || !canStart) {
             return;
         }
 
@@ -47,12 +67,16 @@ function App() {
 
 
         const layers: Layers = {
-            islands: new Array(GAME_CONFIG.ISLAND_COUNT)
-                .fill([{ coord: [] }])
-                .map((emptyArr, index, islands) => generateRandomIsland(islands.map(island => island.coord))),
+            islands: islandData,
             ships: [],
             canonballs: [],
             items: [],
+        }
+
+        if (isCreator) {
+            socket.emit('islandCreated', layers.islands);
+        } else {
+
         }
 
         const game = new GameEngine(ctx, layers);
@@ -74,7 +98,7 @@ function App() {
 
 
 
-    }, [hasLoaded])
+    }, [canStart, hasLoaded, isCreator, islandData])
 
 
 
