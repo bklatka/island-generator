@@ -11,7 +11,7 @@ import { getRandomFreePosition } from "./getRandomFreePosition";
 import { TileMap } from "../painters/drawIslandPart";
 
 
-const ISLAND_LENGTH = 30;
+const ISLAND_LENGTH = 40;
 
 
 export function generateRandomIsland(forbiddenZone: Coordinates[] = [], size: number = ISLAND_LENGTH): DrawnParts[] {

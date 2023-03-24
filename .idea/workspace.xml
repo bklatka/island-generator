@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8f9f94b1-0f77-4c87-81f7-e24d352aaadb" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/src/shapeCalculators/generateRandomIsland.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/shapeCalculators/generateRandomIsland.ts" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="tsconfig.json" />
+        <option value="TypeScript JSX File" />
+        <option value="TypeScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="superweapon" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
+  </component>
+  <component name="GitToolBoxStore">
+    <option name="projectConfigVersion" value="5" />
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="mynewfeature" />
+                    <option name="lastUsedInstant" value="1679658153" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="master" />
+                    <option name="lastUsedInstant" value="1679658112" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="superweapon" />
+                    <option name="lastUsedInstant" value="1671372250" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="multiplayer" />
+                    <option name="lastUsedInstant" value="1670184884" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2IE569Fz7FJCVoOPNNZIIFKBuaH" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <OptionsSetting value="false" id="Update" />
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/bernardklatka/projects/island-generator/src/assets/ships/ship2&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/Users/bernardklatka/projects/island-generator/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/assets/ships/ship2" />
+      <recent name="$PROJECT_DIR$/src/assets/ships/ship1" />
+      <recent name="$PROJECT_DIR$/src/assets/misc" />
+      <recent name="$PROJECT_DIR$/src/assets/ships" />
+      <recent name="$PROJECT_DIR$/src/assets/tiles" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/entities/superweapons/LaserCannon" />
+      <recent name="$PROJECT_DIR$/src/assets/ui" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/src/assets/items" />
+      <recent name="$PROJECT_DIR$/src/entities/ship" />
+    </key>
+    <key name="es6.move.members.recent.items">
+      <recent name="$PROJECT_DIR$/src/types/IslandTiles.ts" />
+    </key>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8f9f94b1-0f77-4c87-81f7-e24d352aaadb" name="Changes" comment="" />
+      <created>1669733725010</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1669733725010</updated>
+      <workItem from="1669733726485" duration="21001000" />
+      <workItem from="1669812115737" duration="8110000" />
+      <workItem from="1669839491553" duration="6026000" />
+      <workItem from="1669877634223" duration="9160000" />
+      <workItem from="1669904004212" duration="28000" />
+      <workItem from="1669904512722" duration="8268000" />
+      <workItem from="1669973405444" duration="8298000" />
+      <workItem from="1669989924874" duration="29241000" />
+      <workItem from="1671372018723" duration="11384000" />
+      <workItem from="1679658085679" duration="68000" />
+    </task>
+    <task id="LOCAL-00014" summary="refactor: remove redundant code and split to files">
+      <created>1669840008285</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1669840008285</updated>
+    </task>
+    <task id="LOCAL-00015" summary="feat: drawing several islands without overlapping">
+      <created>1669840862538</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1669840862538</updated>
+    </task>
+    <task id="LOCAL-00016" summary="refactor: remove redundant ctx and add helper function to generate random island to layers">
+      <created>1669840969122</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1669840969122</updated>
+    </task>
+    <task id="LOCAL-00017" summary="refactor: extracted game config">
+      <created>1669841247636</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1669841247636</updated>
+    </task>
+    <task id="LOCAL-00018" summary="feat: drawing ship on free spot">
+      <created>1669842153962</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1669842153962</updated>
+    </task>
+    <task id="LOCAL-00019" summary="feat: generate map with gameEngine">
+      <created>1669881740377</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1669881740377</updated>
+    </task>
+    <task id="LOCAL-00020" summary="feat: move circle using keyboard">
+      <created>1669887419311</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1669887419311</updated>
+    </task>
+    <task id="LOCAL-00021" summary="feat: move ship around sea with islands">
+      <created>1669888716052</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1669888716052</updated>
+    </task>
+    <task id="LOCAL-00022" summary="feat: add debug info">
+      <created>1669890811136</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1669890811136</updated>
+    </task>
+    <task id="LOCAL-00023" summary="feat: rotated ship">
+      <created>1669891879170</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1669891879170</updated>
+    </task>
+    <task id="LOCAL-00024" summary="feat: sailing ship with rotation">
+      <created>1669892262639</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1669892262639</updated>
+    </task>
+    <task id="LOCAL-00025" summary="feat: animate sailing ship">
+      <created>1669906022387</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1669906022387</updated>
+    </task>
+    <task id="LOCAL-00026" summary="feat: controlling ship speed">
+      <created>1669906575185</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1669906575185</updated>
+    </task>
+    <task id="LOCAL-00027" summary="refactor: cleanup ship class">
+      <created>1669906909750</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1669906909750</updated>
+    </task>
+    <task id="LOCAL-00028" summary="feat: two player controls">
+      <created>1669907318906</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1669907318906</updated>
+    </task>
+    <task id="LOCAL-00029" summary="feat: firing canonballs on both sides">
+      <created>1669909296601</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1669909296601</updated>
+    </task>
+    <task id="LOCAL-00030" summary="feat: enable second player">
+      <created>1669915317630</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1669915317630</updated>
+    </task>
+    <task id="LOCAL-00031" summary="feat: enable shooting for player 2">
+      <created>1669915376858</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1669915376858</updated>
+    </task>
+    <task id="LOCAL-00032" summary="feat: add docs">
+      <created>1669915448794</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1669915448794</updated>
+    </task>
+    <task id="LOCAL-00033" summary="docs: styling docs on top">
+      <created>1669927158036</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1669927158036</updated>
+    </task>
+    <task id="LOCAL-00034" summary="feat: canon cooldown visualised">
+      <created>1669968211726</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1669968211726</updated>
+    </task>
+    <task id="LOCAL-00035" summary="fix: scaling of images">
+      <created>1669974686270</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1669974686270</updated>
+    </task>
+    <task id="LOCAL-00036" summary="fix: size of cannonball">
+      <created>1669974717827</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1669974717827</updated>
+    </task>
+    <task id="LOCAL-00037" summary="feat: animate canonball">
+      <created>1669984242315</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1669984242315</updated>
+    </task>
+    <task id="LOCAL-00038" summary="feat: simple game of fighting ships with healthbar">
+      <created>1669986891877</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1669986891877</updated>
+    </task>
+    <task id="LOCAL-00039" summary="fix: color of cooldown bar">
+      <created>1669990611601</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1669990611601</updated>
+    </task>
+    <task id="LOCAL-00040" summary="feat: destroying ship with animations">
+      <created>1669996195066</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1669996195066</updated>
+    </task>
+    <task id="LOCAL-00041" summary="refactor: livign time to config">
+      <created>1669996299828</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1669996299828</updated>
+    </task>
+    <task id="LOCAL-00042" summary="refactor: move health state to different class">
+      <created>1670011729735</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1670011729735</updated>
+    </task>
+    <task id="LOCAL-00043" summary="refactor: move cannon to separate class">
+      <created>1670013203703</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1670013203703</updated>
+    </task>
+    <task id="LOCAL-00044" summary="feat: item generation and pickup">
+      <created>1670016204346</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1670016204346</updated>
+    </task>
+    <task id="LOCAL-00045" summary="feat: use effect of items">
+      <created>1670016635089</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1670016635089</updated>
+    </task>
+    <task id="LOCAL-00046" summary="feat: add finish screen">
+      <created>1670017544609</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1670017544609</updated>
+    </task>
+    <task id="LOCAL-00047" summary="feat: debug only on development">
+      <created>1670017589556</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1670017589556</updated>
+    </task>
+    <task id="LOCAL-00048" summary="docs: add better docs">
+      <created>1670017973662</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1670017973662</updated>
+    </task>
+    <task id="LOCAL-00049" summary="fix: outside grid padding">
+      <created>1670100142814</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1670100142814</updated>
+    </task>
+    <task id="LOCAL-00050" summary="refactor: user controls">
+      <created>1670101531015</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1670101531015</updated>
+    </task>
+    <task id="LOCAL-00051" summary="feat: add basic UI for ships">
+      <created>1670104586024</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1670104586024</updated>
+    </task>
+    <task id="LOCAL-00052" summary="feat: add super weapon slot to UI">
+      <created>1670105203286</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1670105203286</updated>
+    </task>
+    <task id="LOCAL-00053" summary="fix: drawing item images with proper aspect ratio">
+      <created>1670106235553</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1670106235553</updated>
+    </task>
+    <task id="LOCAL-00054" summary="feat: increase game size">
+      <created>1670106447148</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1670106447148</updated>
+    </task>
+    <task id="LOCAL-00055" summary="feat: add connection to WS and player counter">
+      <created>1670189995315</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1670189995315</updated>
+    </task>
+    <task id="LOCAL-00056" summary="refactor: generate island with external data">
+      <created>1670191080758</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1670191080758</updated>
+    </task>
+    <task id="LOCAL-00057" summary="feat: render same map for both players">
+      <created>1670191566490</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1670191566490</updated>
+    </task>
+    <task id="LOCAL-00058" summary="WIP approach to game layers">
+      <created>1671372039375</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1671372039375</updated>
+    </task>
+    <task id="LOCAL-00059" summary="refactor: use island data and island painters instead of entities">
+      <created>1671373074410</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1671373074410</updated>
+    </task>
+    <task id="LOCAL-00060" summary="feat: basic laser shooting">
+      <created>1671376496631</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1671376496631</updated>
+    </task>
+    <task id="LOCAL-00061" summary="fix: laser shooting">
+      <created>1671376795832</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1671376795832</updated>
+    </task>
+    <task id="LOCAL-00062" summary="feat: particle animation for laser charging">
+      <created>1671382193749</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1671382193749</updated>
+    </task>
+    <option name="localTasksCounter" value="63" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
+    <MESSAGE value="feat: simple game of fighting ships with healthbar" />
+    <MESSAGE value="fix: color of cooldown bar" />
+    <MESSAGE value="feat: destroying ship with animations" />
+    <MESSAGE value="refactor: livign time to config" />
+    <MESSAGE value="refactor: move health state to different class" />
+    <MESSAGE value="refactor: move cannon to separate class" />
+    <MESSAGE value="feat: item generation and pickup" />
+    <MESSAGE value="feat: use effect of items" />
+    <MESSAGE value="feat: add finish screen" />
+    <MESSAGE value="feat: debug only on development" />
+    <MESSAGE value="docs: add better docs" />
+    <MESSAGE value="fix: outside grid padding" />
+    <MESSAGE value="refactor: user controls" />
+    <MESSAGE value="feat: add basic UI for ships" />
+    <MESSAGE value="feat: add super weapon slot to UI" />
+    <MESSAGE value="fix: drawing item images with proper aspect ratio" />
+    <MESSAGE value="feat: increase game size" />
+    <MESSAGE value="feat: add connection to WS and player counter" />
+    <MESSAGE value="refactor: generate island with external data" />
+    <MESSAGE value="feat: render same map for both players" />
+    <MESSAGE value="WIP approach to game layers" />
+    <MESSAGE value="refactor: use island data and island painters instead of entities" />
+    <MESSAGE value="feat: basic laser shooting" />
+    <MESSAGE value="fix: laser shooting" />
+    <MESSAGE value="feat: particle animation for laser charging" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: particle animation for laser charging" />
+    <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
+  </component>
+</project>
